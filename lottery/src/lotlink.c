@@ -77,6 +77,30 @@ int saveData(BuyerLink *buyerHead)
 	return 1;
 
 }
+/*
+* #include "lotlink.h"
+* 声 明：
+* 功 能：释放链表中所有节点空间
+* 接 收：头指针
+* 返 回：int (1:释放完毕 0:释放失败)
+*/
+int freeBuyerLinkAllNode(BuyerLink *buyerHead)
+{
+	if(NULL == buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return 0;
+	}
+	BuyerLink *pre = NULL;
+	while(NULL != buyerHead)
+	{
+		pre = buyerHead -> next;
+		free(buyerHead);
+		buyerHead = pre;
+	}
+	printf("BuyerLink释放完毕\n");
+	return 1;
+}
 
 /*
 * #include "lotlink.h"
@@ -108,14 +132,14 @@ int insertAfterBuyerLink(BuyerLink *buyerHead,Buyer *buyer)
 		return 0;
 	}
 	BuyerLink *newNode = createBuyerNode(buyer);
-	while(NULL != buyerHead)
+	while(NULL != buyerHead -> next)
 	{
 		buyerHead = buyerHead -> next;
 	}
 	buyerHead -> next = newNode;
 	return 1;
 }
-#if 0
+
 /*
 * #include "lotlink.h"
 * 声 明：
@@ -123,23 +147,22 @@ int insertAfterBuyerLink(BuyerLink *buyerHead,Buyer *buyer)
 * 接 收：
 * 返 回：
 */
-Buyer *select_front_node(BuyerLink *head)
+BuyerLink *getPreNodePoint(BuyerLink *buyerHead,char *name)
 {
-	if(NULL == head)
+	if(NULL == buyerHead)
 	{
-		printf("头节点为空\n");
-		return;
+		printf(BUYER_HEAD_IS_NULL);
+		return 	NULL;
 	}
-	BuyerLink *pre = head;
-	head = head -> next;
-	while(NULL != head)
+	BuyerLink *pre = buyerHead;
+	buyerHead = buyerHead -> next;
+	while(NULL != buyerHead)
 	{
-		//
 		return pre;
 	}
 	return NULL;	
 }
-
+#if 0
 /*
 * #include "lotlink.h"
 * 声 明：

@@ -14,12 +14,12 @@
 #include "lottery.h"
 void mainMenuControl(BuyerLink *buyerHead)
 {
+	system("clear");
 	if(NULL == buyerHead)
 	{
 		printf(BUYER_HEAD_IS_NULL);
 		return;
 	}
-	system("clear");
 	loadData(buyerHead);
 	int choose = 0;
 	while(1)
@@ -31,19 +31,21 @@ void mainMenuControl(BuyerLink *buyerHead)
 		scanf("%d",&choose);
 		if(getchar() != '\n')
 		{
-			printf("格式错误\n");
-			return;
+			while(getchar() != '\n');
+			printf("格式错误,请重新输入！\n");
+			continue;
 		}
 		switch(choose)
 		{
 			case 1:
-				
+				loginSystem(buyerHead);
 				break;
 			case 2:
 				buyerRegist(buyerHead);
 				break;
 			case 0:
 				saveData(buyerHead);
+				freeBuyerLinkAllNode(buyerHead);
 				printf("退出成功\n");
 				return;
 			default:
@@ -51,6 +53,15 @@ void mainMenuControl(BuyerLink *buyerHead)
 				break;
 		}
 	}
+}
 
+void buyerMenuControl(BuyerLink *buyerHead)
+{
+	system("clear");
+	if(NULL == buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return;
+	}
 
 }

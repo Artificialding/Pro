@@ -62,15 +62,15 @@ typedef struct buyLink{
 	struct buyLink *next;
 }BuyLink;
 
-/**************操作链表函数*********************/
-int loadData(BuyerLink *buyerHead);
-int saveData(BuyerLink *buyerHead);
-BuyerLink *createBuyerNode(Buyer *buyer);//创建节点
-int insertAfterBuyerLink(BuyerLink *buyerHead,Buyer *buyer);//后插
-//Buyer *select_front_node(void);//获取当前节点前一个节点地址
-//void delete_node(void);//删除节点
+/*******************************操作彩民链表函数*********************/
+int loadData(BuyerLink *buyerHead);                         //加载文件彩民信息到链表
+int saveData(BuyerLink *buyerHead);                         //保存彩民信息链表到文件
+int freeBuyerLinkAllNode(BuyerLink *buyerHead);             //释放所有彩民节点
+BuyerLink *createBuyerNode(Buyer *buyer);                   //创建彩民节点
+int insertAfterBuyerLink(BuyerLink *buyerHead,Buyer *buyer);//后插彩民节点
+BuyerLink *getPreNodePoint(BuyerLink *buyHead,char *name);  //获取彩民前驱节点
+//void delete_node(void);//删除指定节点
 //void sort_node(void);//排序
-//void free_all_node(BuyerLink *head);//释放所有节点
 
 
 #endif

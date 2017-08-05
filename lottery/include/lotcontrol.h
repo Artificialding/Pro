@@ -12,6 +12,9 @@
 #define _LOTCONTROL_H_
 #include "lotlink.h"
 void mainMenuControl(BuyerLink *buyerHead);//主菜单控制函数声明
+void buyerMenuControl(BuyerLink *buyerHead);//才名菜单控制函数声明
+void adminMenuControl();//管理员菜单控制函数声明
+void notatyMenuControl();//公正员菜单控制函数声明
 
 
 #endif

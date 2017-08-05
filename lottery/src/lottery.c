@@ -17,11 +17,11 @@
 /***********************************Model层函数具体实现************************************/
 /**************彩民********************************/
 /**************识别身份证号码**************/
-int identifyCardId(char *str)
+int identifyCardId(char *cardId)
 {
 	int len = 0;
 	int i = 0;
-	len = strlen(str);
+	len = strlen(cardId);
 	if(len < 18)//少于18位
 	{
 		return 0;
@@ -30,13 +30,13 @@ int identifyCardId(char *str)
 	{
 		for(i = 0;i < 17;++i)
 		{
-			if(str[i] < '0' || str[i] > '9')//前17位出现非数字
+			if(cardId[i] < '0' || cardId[i] > '9')//前17位出现非数字
 			{	
 				printf("您输入的身份证号码格式有误！\n");
 				return 0;
 			}
 		}
-		if(!(str[17] == 'X' || (str[17] >= '0' && str[17] <= '9')))//最后一位
+		if(!(cardId[17] == 'X' || (cardId[17] >= '0' && cardId[17] <= '9')))//最后一位
 		{
 			printf("您输入的身份证号码格式有误！\n");
 			return 0;
@@ -44,10 +44,10 @@ int identifyCardId(char *str)
 		else//是个有效的身份证号码//321324 1995 1004485X
 		{
 			char strYear[5] = {0};
-			strYear[0] = str[6];
-			strYear[1] = str[7];
-			strYear[2] = str[8];
-			strYear[3] = str[9];
+			strYear[0] = cardId[6];
+			strYear[1] = cardId[7];
+			strYear[2] = cardId[8];
+			strYear[3] = cardId[9];
 			int year = atoi(strYear);
 			if(2017 - year < 18)//未满18周岁
 			{
@@ -60,24 +60,20 @@ int identifyCardId(char *str)
 	return 1;
 }
 
-int checkName(char *str)
+int identifyTelNum(char *telNum)
 {
-	return 1;
-}
-int checkTelNum(char *str)
-{
-	int len = strlen(str);
-	if(len != 12)
+	int len = strlen(telNum);
+	if(len != 11)
 	{
-		printf("手机号码长度不够！\n");
+		printf("手机号码位数有误！\n");
 		return 0;
 	}
 	else
 	{
 		int i = 0;
-		for(i = 0;i < 12;++i)
+		for(i = 0;i < 11;++i)
 		{
-			if(str[i] < '0' || str[i] > '9')
+			if(telNum[i] < '0' || telNum[i] > '9')
 			{
 				printf("手机格式有误！\n");
 				return 0;
@@ -88,7 +84,7 @@ int checkTelNum(char *str)
 }
 
 /*******************处理密码********************/
-int changePasswd(char *str)
+int changePasswd(char *newPasswd)
 {
 	int i = 0;
 	for(i = 0;i< 3;++i)
@@ -107,7 +103,7 @@ int changePasswd(char *str)
 		}
 		else
 		{
-			strcpy(str,strPasswdConfirm);			
+			strcpy(newPasswd,strPasswdConfirm);			
 			return 1;
 		}
 	}
@@ -134,7 +130,7 @@ int buyerRegist(BuyerLink *buyerHead)
 	char name[20] = "";
 	printf("请输入账户名:");
 	scanf("%s",name);
-	if(0 == checkName(name))
+	if(NULL == getPreNodePoint(buyerHead,name))
 	{
 		printf("注册失败！\n");
 		return 0;
@@ -145,7 +141,7 @@ int buyerRegist(BuyerLink *buyerHead)
 	char telNum[12] = "";
 	printf("请输入您的手机号码:");
 	scanf("%s",telNum);
-	if(0 == checkTelNum(telNum))
+	if(0 == identifyTelNum(telNum))
 	{
 		printf("注册失败！\n");
 		return 0;
@@ -160,13 +156,77 @@ int buyerRegist(BuyerLink *buyerHead)
 	}
 	strcpy(buyer.passwd,newPasswd);
 
-
-
-
-
-/******************后插彩民节点********************/
-	insertAfterBuyerLink(buyerHead,&buyer);
+	/******************后插彩民节点********************/
+	if(0 == insertAfterBuyerLink(buyerHead,&buyer))
+	{
+		printf("注册失败！\n");
+		return 0;
+	}
+	printf("注册成功！\n");
 	return 1;
+}
+
+/******************登录************************/
+int loginSystem(BuyerLink *buyerHead)
+{
+	char name[20] = "";
+	char passwd[10] = "";
+	printf("请输入用户名:");
+	scanf("%s",name);
+	if(0 == strcmp("admin",name))
+	{
+		printf("请输入密码:");
+		scanf("%s",passwd);
+		if(0 == strcmp("admin",passwd))
+		{
+			//进入管理员菜单界面
+			return 1;
+		}
+		else
+		{
+			printf("你输入的密码有误！\n");
+			return 0;
+		}
+	}
+	else if(0 == strcmp("notary",name))
+	{
+		printf("请输入密码:");
+		scanf("%s",passwd);
+		if(0 == strcmp("notary",passwd))
+		{
+			//进入公正员界面
+			return 1;
+		}
+		else
+		{
+			printf("你输入的密码有误！\n");
+			return 0;
+		}
+	}
+	else
+	{
+		BuyerLink *pre = getPreNodePoint(buyerHead,name);
+		if(NULL == pre)
+		{
+			printf("您输入的用户名不存在！\n");
+			return 0;
+		}
+		else
+		{
+			printf("请输入密码:");
+			scanf("%s",passwd);
+			if(0 == strcmp(passwd,pre -> next ->data.passwd))
+			{
+				//进入彩民菜单界面
+				return 1;
+			}
+			else
+			{
+				printf("你输入的密码有误！\n");
+				return 0;
+			}
+		}
+	}
 }
 
 

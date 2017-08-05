@@ -12,11 +12,11 @@
 #define _LOTTERY_H_
 
 #include "lotlink.h"
-/**************Model层逻辑函数声明*********************/
-int identifyCardId(char *str);           //识别身份证号码
-int checkName(char *str);              //识别用户名
-int checkTelNum(char *str);            //识别手机号码
-int changePasswd(char *str);             //修改密码
-int buyerRegist(BuyerLink *buyerHead);   //彩民注册
+/**************Model层*彩民*逻辑函数声明*********************/
+int identifyCardId(char *cardId);              //识别身份证号码
+int identityTelNum(char *telNum);              //识别手机号码
+int changePasswd(char *newPasswd);             //修改密码
+int buyerRegist(BuyerLink *buyerHead);         //彩民注册
+int loginSystem(BuyerLink *buyerHead);         //登录
 
 #endif
