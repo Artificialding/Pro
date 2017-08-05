@@ -1,33 +1,49 @@
+/*
+* Copyright(c)Ziyi.Gao
+* 作    者：ziyi.Gao
+* 创建日期：2017-8-5
+* 完成日期：2017-8-5
+* 当前版本：1.0
+*/
 #include "lotcontrol.h"
 #include "lotview.h"
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
-void main_menu_control(void)
+#include "lotlink.h"
+void mainMenuControl(BuyerLink *buyerHead)
 {
+	if(NULL != buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return;
+	}
+	system("clear");
+	load_data();
 	int choose = 0;
 	while(1)
 	{
 		sleep(1);
 		system("clear");
-		main_menu();
-		printf("intput your choose:");
+		mainMenu();
+		printf("选择:");
 		scanf("%d",&choose);
 		if(getchar() != '\n')
 		{
-			printf("error\n");
+			printf("格式错误\n");
 			return;
 		}
 		switch(choose)
 		{
 			case 1:
-				//
+				
 				break;
 			case 2:
-				////
+				
 				break;
 			case 0:
-				printf("tuichu\n");
+				save_data();
+				printf("退出成功\n");
 				return;
 			default:
 				printf("error\n");
