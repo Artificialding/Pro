@@ -10,6 +10,7 @@
 #include "lotlink.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /*
 * #include "lotlink.h"
@@ -18,9 +19,31 @@
 * 接 收：
 * 返 回：
 */
-void load_data(void)
-{	
-	printf("加载成功\n");
+int loadData(BuyerLink *buyerHead)
+{
+	/*********加载彩民数据***********/
+	if(NULL == buyerHead)
+	{
+		printf("BUYER_HEAD_IS_NULL");
+		return 0;
+	}
+	FILE *fprBuyer = fopen("./file/buyer.bin","rb");
+	if(NULL == fprBuyer)
+	{
+		system("touch buyer.bin");
+		return 1;
+	}
+	Buyer buyer = {0};
+	memset(&buyer,0,sizeof(Buyer));
+	while(0 != fread(&buyer,sizeof(Buyer),1,fprBuyer))
+	{
+		insertAfterBuyerLink(buyerHead,&buyer);
+	}
+	fclose(fprBuyer);
+	fprBuyer = NULL;
+	return 1;
+	/***************************************/
+
 }
 
 /*
@@ -30,11 +53,31 @@ void load_data(void)
 * 接 收：
 * 返 回：int(1:保存成功 0:保存失败)
 */
-void save_data(void)
+int saveData(BuyerLink *buyerHead)
 {
-	printf("保存完毕\n");		
+	if(NULL == buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return 0;
+	}
+	FILE *fpsBuyer = fopen("./file/buyer.bin","wb");
+	if(NULL == fpsBuyer)
+	{
+		printf("buyer.bin文件写打开失败！\n");
+		return 0;
+	}
+	buyerHead = buyerHead -> next;
+	while(NULL != buyerHead)
+	{
+		fwrite(&buyerHead -> data,sizeof(Buyer),1,fpsBuyer);
+		buyerHead = buyerHead -> next;
+	}
+	fclose(fpsBuyer);
+	fpsBuyer = NULL;
+	return 1;
+
 }
-#if 0
+
 /*
 * #include "lotlink.h"
 * 声 明：
@@ -42,10 +85,10 @@ void save_data(void)
 * 接 收：
 * 返 回：
 */
-BuyerLink *create_node(Buyer buyer)
+BuyerLink *createBuyerNode(Buyer *buyer)
 {
 	BuyerLink *newNode = (BuyerLink *)calloc(1,sizeof(BuyerLink));
-	newNode -> data = buyer.data;
+	newNode -> data = *buyer;
 	newNode -> next = NULL;
 	return newNode;
 }
@@ -57,21 +100,22 @@ BuyerLink *create_node(Buyer buyer)
 * 接 收：
 * 返 回：
 */
-void insert_after(BuyerLink *head,Buyer buyer)
+int insertAfterBuyerLink(BuyerLink *buyerHead,Buyer *buyer)
 {
-	if(NULL == head)
+	if(NULL == buyerHead)
 	{
-		printf("头节点为空！\n");
-		return;
+		printf("BUYER_HEAD_IS_NULL\n");
+		return 0;
 	}
-	BuyerLink *newNode = create_node(buyer);
-	while(NULL == head)
+	BuyerLink *newNode = createBuyerNode(buyer);
+	while(NULL != buyerHead)
 	{
-		head = head -> next;
+		buyerHead = buyerHead -> next;
 	}
-	head -> next = newNode;
+	buyerHead -> next = newNode;
+	return 1;
 }
-
+#if 0
 /*
 * #include "lotlink.h"
 * 声 明：

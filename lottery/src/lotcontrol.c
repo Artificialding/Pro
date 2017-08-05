@@ -11,15 +11,16 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include "lotlink.h"
+#include "lottery.h"
 void mainMenuControl(BuyerLink *buyerHead)
 {
-	if(NULL != buyerHead)
+	if(NULL == buyerHead)
 	{
 		printf(BUYER_HEAD_IS_NULL);
 		return;
 	}
 	system("clear");
-	load_data();
+	loadData(buyerHead);
 	int choose = 0;
 	while(1)
 	{
@@ -39,10 +40,10 @@ void mainMenuControl(BuyerLink *buyerHead)
 				
 				break;
 			case 2:
-				
+				buyerRegist(buyerHead);
 				break;
 			case 0:
-				save_data();
+				saveData(buyerHead);
 				printf("退出成功\n");
 				return;
 			default:

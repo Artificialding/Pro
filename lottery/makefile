@@ -1,10 +1,7 @@
 CC:=gcc
 DEPEND:=obj/main.o
 DEPEND+=obj/lottery.o
-
 DEPEND+=obj/lotlink.o
-
-
 DEPEND+=obj/lotcontrol.o
 DEPEND+=obj/lotview.o
 
@@ -15,7 +12,6 @@ obj/%.s:obj/%.i
 obj/%.o:obj/%.s
 	$(CC) -c $^ -o $@
 bin/main:$(DEPEND)
-
 	$(CC)    $^ -o $@
 	bin/main
 #obj/%.o:src/%.c
@@ -23,7 +19,6 @@ bin/main:$(DEPEND)
 
 
 
-	$(CC)    $^ -o $@ 
 
 clean:
 	rm -rf $(DEPEND)

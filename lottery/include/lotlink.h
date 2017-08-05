@@ -63,10 +63,10 @@ typedef struct buyLink{
 }BuyLink;
 
 /**************操作链表函数*********************/
-void load_data(void);
-void save_data(void);
-//BuyerLink *create_node(void);//创建节点
-//void insert_after(void);//后插
+int loadData(BuyerLink *buyerHead);
+int saveData(BuyerLink *buyerHead);
+BuyerLink *createBuyerNode(Buyer *buyer);//创建节点
+int insertAfterBuyerLink(BuyerLink *buyerHead,Buyer *buyer);//后插
 //Buyer *select_front_node(void);//获取当前节点前一个节点地址
 //void delete_node(void);//删除节点
 //void sort_node(void);//排序
