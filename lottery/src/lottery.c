@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "lotcontrol.h"
 
 /***********************************Model层函数具体实现************************************/
 /**************彩民********************************/
@@ -179,7 +180,7 @@ int loginSystem(BuyerLink *buyerHead)
 		scanf("%s",passwd);
 		if(0 == strcmp("admin",passwd))
 		{
-			//进入管理员菜单界面
+			adminMenuControl();	//进入管理员菜单界面
 			return 1;
 		}
 		else
@@ -194,7 +195,7 @@ int loginSystem(BuyerLink *buyerHead)
 		scanf("%s",passwd);
 		if(0 == strcmp("notary",passwd))
 		{
-			//进入公正员界面
+			notaryMenuControl();	//进入公正员界面
 			return 1;
 		}
 		else
@@ -217,7 +218,7 @@ int loginSystem(BuyerLink *buyerHead)
 			scanf("%s",passwd);
 			if(0 == strcmp(passwd,pre -> next ->data.passwd))
 			{
-				//进入彩民菜单界面
+				adminMenuControl(buyerHead);//进入彩民菜单界面
 				return 1;
 			}
 			else

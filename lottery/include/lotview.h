@@ -2,7 +2,7 @@
 * Copyright(c)Ziyi.Gao
 * 文 件 名：lotview.h
 * 描    述：各级菜单声明
-* 作    者：ziyi.Gao
+* 作    者：Ziyi.Gao
 * 创建日期：2017-8-5
 * 完成日期：2017-8-5
 * 当前版本：1.0

@@ -1,7 +1,8 @@
 /*
 * Copyright(c)Ziyi.Gao
 * 文 件 名：lotlink.c
-* 描    述：实现操作链表的函数，对外提供：文件读取保存、后插节点、返回前驱节点、删除节点、释放所有节点、链表排序
+* 描    述：实现操作链表的函数，对外提供：文件读取保存、后插节点\
+			返回前驱节点地址、	删除节点、释放所有节点、链表排序
 * 作    者：Ziyi.Gao
 * 创建日期：2017-8-5
 * 完成日期：
@@ -143,7 +144,7 @@ int insertAfterBuyerLink(BuyerLink *buyerHead,Buyer *buyer)
 /*
 * #include "lotlink.h"
 * 声 明：
-* 功 能：返回目标节点的前驱节点,自动区分定位条件
+* 功 能：返回前驱节点，根据用户名
 * 接 收：
 * 返 回：
 */
@@ -158,7 +159,12 @@ BuyerLink *getPreNodePoint(BuyerLink *buyerHead,char *name)
 	buyerHead = buyerHead -> next;
 	while(NULL != buyerHead)
 	{
-		return pre;
+		if(0 == (strcmp(buyerHead -> data.name,name)))
+		{
+			return pre;
+		}
+		pre = buyerHead;
+		buyerHead = buyerHead -> next;
 	}
 	return NULL;	
 }
@@ -190,27 +196,6 @@ void delete_node(BuyLink *head)
 	printf("删除成功\n");
 }
 
-/*
-* #include "lotlink.h"
-* 声 明：
-* 功 能：释放链表中所有节点空间
-* 接 收：头指针
-* 返 回：int (1:释放完毕 0:释放失败)
-*/
-void free_all_node(BuyerLink *head)
-{
-	if(NULL == head)
-	{
-		printf("头节点为空\n");
-		return;
-	}
-	while(NULL != head)
-	{
-		pre = head -> next;
-		free(head);
-		head = pre;
-	}
-}
 
 /*
 * #include "lotlink.h"
