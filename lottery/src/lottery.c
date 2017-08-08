@@ -15,9 +15,7 @@
 #include <string.h>
 #include "lotcontrol.h"
 
-/***********************************Model层函数具体实现************************************/
-/**************彩民********************************/
-/**************识别身份证号码**************/
+
 int identifyCardId(char *cardId)
 {
 	int len = 0;
@@ -52,8 +50,9 @@ int identifyCardId(char *cardId)
 			int year = atoi(strYear);
 			if(2017 - year < 18)//未满18周岁
 			{
-				printf("对不起！您未满18周岁，\
-				根据《中华人民共和国未成年人保护法》相关规定，禁止未成年人购买彩票！");
+				printf("对不起！您未满18周岁\n，\
+						根据《中华人民共和国未成年人保护法》\
+						相关规定，禁止未成年人购买彩票！");
 				return 0;
 			}
 		}		
@@ -79,6 +78,7 @@ int identifyTelNum(char *telNum)
 				printf("手机格式有误！\n");
 				return 0;
 			}
+	printf("4.账户充值\n");
 		}
 		return 1;
 	}
@@ -131,9 +131,9 @@ int buyerRegist(BuyerLink *buyerHead)
 	char name[20] = "";
 	printf("请输入账户名:");
 	scanf("%s",name);
-	if(NULL == getPreNodePoint(buyerHead,name))
+	if(NULL != getPreNodePoint(buyerHead,name))
 	{
-		printf("注册失败！\n");
+		printf("该用户名已被注册！\n");
 		return 0;
 	}
 	strcpy(buyer.name,name);
@@ -218,7 +218,7 @@ int loginSystem(BuyerLink *buyerHead)
 			scanf("%s",passwd);
 			if(0 == strcmp(passwd,pre -> next ->data.passwd))
 			{
-				adminMenuControl(buyerHead);//进入彩民菜单界面
+				buyerMenuControl(buyerHead,name);//进入彩民菜单界面
 				return 1;
 			}
 			else
@@ -228,6 +228,31 @@ int loginSystem(BuyerLink *buyerHead)
 			}
 		}
 	}
+}
+
+int printOneMessage(BuyerLink *buyerHead,char *name)
+{
+	if(NULL == buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return 0;
+	}
+	BuyerLink *pre = getPreNodePoint(buyerHead,name);
+	if(NULL != pre)
+	{
+		Buyer buyer;
+		memset(&buyer,0,sizeof(Buyer));
+		buyer = pre -> next -> data;
+		printf("ID\t用户名\t身份证号码\t\t手机号码\t账户余额\n");
+		printf("%d\t%s\t%s\t%s\t%.2lf\n",\
+				buyer.id,\
+				buyer.name,\
+				buyer.cardId,\
+				buyer.telNum,\
+				buyer.balance);
+		return 1;
+	}
+	return 0;
 }
 
 

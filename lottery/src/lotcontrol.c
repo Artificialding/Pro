@@ -55,7 +55,7 @@ void mainMenuControl(BuyerLink *buyerHead)
 	}
 }
 
-void buyerMenuControl(BuyerLink *buyerHead)
+void buyerMenuControl(BuyerLink *buyerHead,char *name)
 {
 	system("clear");
 	if(NULL == buyerHead)
@@ -75,11 +75,12 @@ void buyerMenuControl(BuyerLink *buyerHead)
 		{
 			while(getchar() != '\n');
 			printf("格式错误，请重新输入！\n");
-			return;
+			continue;
 		}
 		switch(choose)
 		{
 			case 1://个人信息
+				printOneMessage(buyerHead,name);
 				break;
 			case 2://购买彩票
 				break;
@@ -115,13 +116,13 @@ void adminMenuControl(void)
 		{
 			while(getchar() != '\n');
 			printf("格式有误！\n");
-			return;
+			continue;
 		}
 		switch(choose)
 		{
 			case 1://发行彩票
 				break;
-			case 2://彩民信息
+			case 2://所有彩民信息
 				break;
 			case 3://查找彩民
 				break;
@@ -151,7 +152,7 @@ void notaryMenuControl(void)
 		{
 			while(getchar() != '\n');
 			printf("格式有误，请重新输入！\n");
-			return;
+			continue;
 		}
 		switch(choose)
 		{
