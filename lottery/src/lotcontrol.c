@@ -107,9 +107,14 @@ void buyerMenuControl(BuyerLink *buyerHead,char *name)
 	}
 }
 
-void adminMenuControl(void)
+int adminMenuControl(BuyerLink *buyerHead)
 {
 	system("clear");
+	if(NULL == buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return 0;
+	}
 	int choose = 0;
 	while(1)
 	{
@@ -129,13 +134,14 @@ void adminMenuControl(void)
 			case 1://发行彩票
 				break;
 			case 2://所有彩民信息
+				printAllBuyerMessage(buyerHead);
 				break;
 			case 3://查找彩民
 				break;
 			case 4://排序
 				break;
 			case 0://退出登录
-				return;
+				return 1;
 			default:
 				printf("情选择菜单中有的选项！\n");
 				break;

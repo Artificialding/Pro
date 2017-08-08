@@ -110,7 +110,21 @@ int initPasswd(char *newPasswd)
 	}
 	return 0;	
 }
-
+int getCurrentMaxId(BuyerLink *buyerHead)
+{
+	if(NULL == buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return 0;
+	}
+	int maxId = 0;
+	buyerHead = buyerHead -> next;
+	while(NULL != buyerHead)
+	{
+		++maxId;
+	}
+	return maxId;
+}
 int buyerRegist(BuyerLink *buyerHead)
 {
 	
@@ -156,7 +170,11 @@ int buyerRegist(BuyerLink *buyerHead)
 		return 0;
 	}
 	strcpy(buyer.passwd,newPasswd);
-
+	/**************初始化id*账户余额*flag*state*************/
+	buyer.id = getCurrentMaxId(buyerHead);
+	buyer.balance = 0.00;
+	buyer.flag = 0;
+	strcpy(buyer.state,"激活");
 	/******************后插彩民节点********************/
 	if(0 == insertAfterBuyerLink(buyerHead,&buyer))
 	{
@@ -179,7 +197,7 @@ int loginSystem(BuyerLink *buyerHead)
 		scanf("%s",passwd);
 		if(0 == strcmp("admin",passwd))
 		{
-			adminMenuControl();	//进入管理员菜单界面
+			adminMenuControl(buyerHead);	//进入管理员菜单界面
 			return 1;
 		}
 		else
@@ -265,7 +283,11 @@ int printOneMessage(BuyerLink *buyerHead,char *name)
 int rechargeAccount(BuyerLink *buyerHead,char *name)
 {
 	if(NULL == buyerHead)
-	{
+	printf("2.购买彩票\n");
+	printf("3.历史记录\n");
+	printf("4.账户充值\n");
+
+{
 		printf(BUYER_HEAD_IS_NULL);
 		return 0;
 	}
@@ -384,6 +406,7 @@ int logOffAccount(BuyerLink *buyerHead,char *name)
 	if(ch == '\n')
 	{
 		pre -> next -> data.flag = 1;
+		strcpy(pre -> next -> data.state,"冻结");
 		printf("注销成功！\n");
 		return 1;
 	}
@@ -400,4 +423,25 @@ int logOffAccount(BuyerLink *buyerHead,char *name)
 }
 
 
-
+int printAllBuyerMessage(BuyerLink *buyerHead)
+{
+	if(NULL == buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return 0;
+	}
+	printf("ID\t用户名\t身份证号码\t\t手机号码\t账户余额\t状态\n");
+	buyerHead = buyerHead -> next;
+	while(NULL != buyerHead)
+	{
+		printf("%d\t%s\t%s\t%s\t%.2lf\t%s\n",\
+				buyerHead -> data.id,\
+				buyerHead -> data.name,\
+				buyerHead -> data.cardId,\
+				buyerHead -> data.telNum,\
+				buyerHead -> data.balance,\
+				buyerHead -> data.state);
+		buyerHead = buyerHead -> next;
+	}
+	return 1;
+}

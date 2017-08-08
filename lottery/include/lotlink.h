@@ -24,6 +24,7 @@ typedef struct buyer{
 	char passwd[10];  //密码
 	double balance;   //账户余额
 	int flag;         //冻结的标记(默认)0:激活状态 1:被冻结
+	char state[6];    //状态:激活 冻结
 }Buyer;
 
 typedef struct buyerLink

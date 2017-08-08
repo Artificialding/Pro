@@ -13,7 +13,7 @@
 #include "lotlink.h"
 void mainMenuControl(BuyerLink *buyerHead);//主菜单控制函数声明
 void buyerMenuControl(BuyerLink *buyerHead,char *name);//彩民菜单控制函数声明
-void adminMenuControl();//管理员菜单控制函数声明
+int adminMenuControl(BuyerLink *buyerHead);//管理员菜单控制函数声明
 void notaryMenuControl();//公正员菜单控制函数声明
 
 
