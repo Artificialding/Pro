@@ -15,7 +15,7 @@
 /**************Model层*主菜单*逻辑函数声明*********************/
 int identifyCardId(char *cardId);              //识别身份证号码
 int identityTelNum(char *telNum);              //识别手机号码
-int initPasswd(char *newPasswd);               //初始化密码
+int initPasswd(char *newPasswd,int chance);    //初始化密码
 int getCurrentMaxId(BuyerLink *buyerHead);     //获取当前最大id值
 int buyerRegist(BuyerLink *buyerHead);         //彩民注册
 int loginSystem(BuyerLink *buyerHead);         //登录

@@ -78,37 +78,30 @@ int identifyTelNum(char *telNum)
 				printf("手机格式有误！\n");
 				return 0;
 			}
-	printf("4.账户充值\n");
 		}
 		return 1;
 	}
 }
 
 /*******************处理密码********************/
-int initPasswd(char *newPasswd)
+int initPasswd(char *initialPasswd,int chance)
 {
-	int i = 0;
-	for(i = 0;i< 3;++i)
+	char confirmPasswd[10] = "";
+	printf("请再次输入密码:");
+	scanf("%s",confirmPasswd);
+	if(0 == strcmp(initialPasswd,confirmPasswd))
 	{
-		char strPasswd[10] = "";
-		char strPasswdConfirm[10] = "";;
-		printf("请输入密码:");
-		scanf("%s",strPasswd);
-		printf("请再次输入密码:");
-		scanf("%s",strPasswdConfirm);
-		if(0 != strcmp(strPasswd,strPasswdConfirm))
-		{	
-			printf("两侧密码不一致，请重新输入!\n");
-			printf("你还有%d次输入机会！\n",2 - i);
-			continue;
-		}
-		else
-		{
-			strcpy(newPasswd,strPasswdConfirm);			
-			return 1;
-		}
+		return 1;
 	}
-	return 0;	
+	else
+	{
+		if(chance == 1)
+		{
+			return 0;
+		}
+		printf("两次不一致！还有%d次机会。\n",--chance);
+		return initPasswd(initialPasswd,chance);
+	}
 }
 int getCurrentMaxId(BuyerLink *buyerHead)
 {
@@ -122,12 +115,12 @@ int getCurrentMaxId(BuyerLink *buyerHead)
 	while(NULL != buyerHead)
 	{
 		++maxId;
+		buyerHead = buyerHead -> next;
 	}
 	return maxId;
 }
 int buyerRegist(BuyerLink *buyerHead)
-{
-	
+{	
 	Buyer buyer = {0}; 
 	memset(&buyer,0,sizeof(Buyer));
 	/****************身份证号码*********************/
@@ -163,15 +156,17 @@ int buyerRegist(BuyerLink *buyerHead)
 	}
 	strcpy(buyer.telNum,telNum);
 	/**************初始化密码************/
-	char newPasswd[10] = "";
-	if(0 == initPasswd(newPasswd))
+	char initialPasswd[10] = "";
+	printf("请输入密码:");
+	scanf("%s",initialPasswd);
+	if(0 == initPasswd(initialPasswd,3))
 	{
 		printf("注册失败!\n");
 		return 0;
 	}
-	strcpy(buyer.passwd,newPasswd);
+	strcpy(buyer.passwd,initialPasswd);
 	/**************初始化id*账户余额*flag*state*************/
-	buyer.id = getCurrentMaxId(buyerHead);
+	buyer.id = getCurrentMaxId(buyerHead) + 1;
 	buyer.balance = 0.00;
 	buyer.flag = 0;
 	strcpy(buyer.state,"激活");
@@ -181,6 +176,7 @@ int buyerRegist(BuyerLink *buyerHead)
 		printf("注册失败！\n");
 		return 0;
 	}
+	saveData(buyerHead);
 	printf("注册成功！\n");
 	return 1;
 }
@@ -226,7 +222,7 @@ int loginSystem(BuyerLink *buyerHead)
 		BuyerLink *pre = getPreNodePoint(buyerHead,name);
 		if(NULL == pre)
 		{
-			printf("您输入的用户名不存在！\n");
+			printf("您输入的账户名不存在！\n");
 			return 0;
 		}
 		else
@@ -265,8 +261,8 @@ int printOneMessage(BuyerLink *buyerHead,char *name)
 		Buyer buyer;
 		memset(&buyer,0,sizeof(Buyer));
 		buyer = pre -> next -> data;
-		printf("ID\t用户名\t身份证号码\t\t手机号码\t账户余额\n");
-		printf("%d\t%s\t%s\t%s\t%.2lf\n",\
+		printf("\033[7m账户ID    唯一帐户名       个人注册身份证号码        注册手机号码      账户余额\033[0m\n");
+		printf("%07d%12s%26s%19s%14.2lf\n",\
 				buyer.id,\
 				buyer.name,\
 				buyer.cardId,\
@@ -276,18 +272,14 @@ int printOneMessage(BuyerLink *buyerHead,char *name)
 	}
 	else
 	{
-		printf("对不起您的账户被冻结，请联系管理员！\n");
+		printf("对不起您的账号被冻结，请联系管理员！\n");
 		return 0;
 	}
 }
 int rechargeAccount(BuyerLink *buyerHead,char *name)
 {
 	if(NULL == buyerHead)
-	printf("2.购买彩票\n");
-	printf("3.历史记录\n");
-	printf("4.账户充值\n");
-
-{
+	{
 		printf(BUYER_HEAD_IS_NULL);
 		return 0;
 	}
@@ -362,7 +354,7 @@ int changePasswd(BuyerLink *buyerHead,char *name)
 	}
 	else
 	{
-		printf("对不起您的账户被冻结，请联系管理员！\n");
+		printf("对不起您的账号被冻结，请联系管理员！\n");
 		return 0;
 	}
 }
@@ -430,17 +422,30 @@ int printAllBuyerMessage(BuyerLink *buyerHead)
 		printf(BUYER_HEAD_IS_NULL);
 		return 0;
 	}
-	printf("ID\t用户名\t身份证号码\t\t手机号码\t账户余额\t状态\n");
+	printf("\033[7m账户ID    唯一帐户名       个人注册身份证号码        注册手机号码      账户余额     账户状态\033[0m\n");
 	buyerHead = buyerHead -> next;
 	while(NULL != buyerHead)
 	{
-		printf("%d\t%s\t%s\t%s\t%.2lf\t%s\n",\
-				buyerHead -> data.id,\
-				buyerHead -> data.name,\
-				buyerHead -> data.cardId,\
-				buyerHead -> data.telNum,\
-				buyerHead -> data.balance,\
-				buyerHead -> data.state);
+		if(1 == buyerHead -> data.flag)
+		{
+			printf("\033[7m%07d%12s%26s%19s%14.2lf%16s\033[0m\n",\
+					buyerHead -> data.id,\
+					buyerHead -> data.name,\
+					buyerHead -> data.cardId,\
+					buyerHead -> data.telNum,\
+					buyerHead -> data.balance,\
+					buyerHead -> data.state);				
+		}
+		else
+		{
+			printf("%07d%12s%26s%19s%14.2lf%16s\n",\
+					buyerHead -> data.id,\
+					buyerHead -> data.name,\
+					buyerHead -> data.cardId,\
+					buyerHead -> data.telNum,\
+					buyerHead -> data.balance,\
+					buyerHead -> data.state);
+		}
 		buyerHead = buyerHead -> next;
 	}
 	return 1;
