@@ -85,7 +85,7 @@ int identifyTelNum(char *telNum)
 }
 
 /*******************处理密码********************/
-int changePasswd(char *newPasswd)
+int initPasswd(char *newPasswd)
 {
 	int i = 0;
 	for(i = 0;i< 3;++i)
@@ -148,9 +148,9 @@ int buyerRegist(BuyerLink *buyerHead)
 		return 0;
 	}
 	strcpy(buyer.telNum,telNum);
-	/**************修改密码************/
+	/**************初始化密码************/
 	char newPasswd[10] = "";
-	if(0 == changePasswd(newPasswd))
+	if(0 == initPasswd(newPasswd))
 	{
 		printf("注册失败!\n");
 		return 0;
@@ -166,7 +166,6 @@ int buyerRegist(BuyerLink *buyerHead)
 	printf("注册成功！\n");
 	return 1;
 }
-
 /******************登录************************/
 int loginSystem(BuyerLink *buyerHead)
 {
@@ -214,6 +213,11 @@ int loginSystem(BuyerLink *buyerHead)
 		}
 		else
 		{
+			if(1 == pre -> next ->data.flag)
+			{
+				printf("您的帐号被冻结，请联系管理员！\n");
+				return 0;
+			}
 			printf("请输入密码:");
 			scanf("%s",passwd);
 			if(0 == strcmp(passwd,pre -> next ->data.passwd))
@@ -252,9 +256,148 @@ int printOneMessage(BuyerLink *buyerHead,char *name)
 				buyer.balance);
 		return 1;
 	}
-	return 0;
+	else
+	{
+		printf("对不起您的账户被冻结，请联系管理员！\n");
+		return 0;
+	}
+}
+int rechargeAccount(BuyerLink *buyerHead,char *name)
+{
+	if(NULL == buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return 0;
+	}
+	BuyerLink *pre = getPreNodePoint(buyerHead,name);
+	if(NULL != pre)
+	{	
+		double charge = 0.00;
+		printf("请输入充值金额:");
+		scanf("%lf",&charge);
+		if(getchar() != '\n')
+		{
+			while(getchar() != '\n');
+			printf("格式有误！\n");
+			return 0;
+		}
+		pre = pre -> next;
+		pre -> data.balance += charge;
+		return 1;
+	}
+	else
+	{
+		printf("对不起你的帐号被冻结，请联系管理员！\n");
+		return 0;		
+	}
 }
 
+int changePasswd(BuyerLink *buyerHead,char *name)
+{
+	if(NULL == buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return 0;
+	}
+	BuyerLink *pre = getPreNodePoint(buyerHead,name);
+	if(NULL != pre)
+	{
+		char newPasswd[10] = "";
+		char confirmPasswd[10] = "";
+		int chance = 3;
+		pre = pre -> next;
+		if(1 == identifyPasswd(pre -> data.passwd,chance))
+		{
+			printf("请输入新密码:");
+			scanf("%s",newPasswd);
+			if(0 == strcmp(pre -> data.passwd,newPasswd))
+			{	
+				printf("新密码不能和原密码相同！\n");
+				return 0;
+			}
+			else
+			{
+				printf("请再次输入新密码:");
+				scanf("%s",confirmPasswd);
+				if(0 == strcmp(newPasswd,confirmPasswd))
+				{
+					strcpy(pre -> data.passwd,confirmPasswd);
+					printf("密码修改成功,请重新登录！\n");
+					return 1;
+				}
+				else
+				{
+					printf("两次输入密码不一致，修改失败！\n");
+					return 0;
+				}
+			}
+		}
+		else
+		{
+			printf("%d次机会用完,冻结！\n",chance);
+			return 0;
+		}
+	}
+	else
+	{
+		printf("对不起您的账户被冻结，请联系管理员！\n");
+		return 0;
+	}
+}
+
+int identifyPasswd(char *passwd,int chance)
+{
+	char inputPasswd[10] = "";
+	printf("请输入原密码:");
+	scanf("%s",inputPasswd);
+	if(0 == strcmp(passwd,inputPasswd))
+	{
+		return 1;
+	}
+	else
+	{
+		if(chance == 1)
+		{
+			return 0;
+		}
+		printf("错误！还有%d次机会。\n",--chance);
+		return identifyPasswd(passwd,chance);
+	}
+}
+int logOffAccount(BuyerLink *buyerHead,char *name)
+{
+	if(NULL == buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return 0;
+	}
+	BuyerLink *pre = getPreNodePoint(buyerHead,name);
+	if(NULL == pre)
+	{
+		printf("用户不存在！\n");
+		return 0;
+	}
+	printf("您确定要注销账户吗？注销后可联系管理员找回帐号。\n");
+	printf("「确认」回车     「取消」ESC：");
+	char ch = getchar();
+	while(getchar() != '\n');
+	if(ch == '\n')
+	{
+		pre -> next -> data.flag = 1;
+		printf("注销成功！\n");
+		return 1;
+	}
+	else if(ch == 27)
+	{
+		printf("取消注销成功！\n");
+		return 0;
+	}
+	else
+	{
+		printf("error注销失败！\n");
+		return 0;
+	}
+}
 
 
 

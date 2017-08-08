@@ -87,10 +87,16 @@ void buyerMenuControl(BuyerLink *buyerHead,char *name)
 			case 3://历史记录
 				break;
 			case 4://账户充值
+				rechargeAccount(buyerHead,name);
 				break;
 			case 5://修改密码
-				break;
+				changePasswd(buyerHead,name);
+				return;
 			case 6://注销账户
+				if(1 == logOffAccount(buyerHead,name))
+				{
+					return;
+				}
 				break;
 			case 0://退出登录
 				return;

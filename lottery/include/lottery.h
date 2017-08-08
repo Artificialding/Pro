@@ -15,17 +15,18 @@
 /**************Model层*主菜单*逻辑函数声明*********************/
 int identifyCardId(char *cardId);              //识别身份证号码
 int identityTelNum(char *telNum);              //识别手机号码
-int changePasswd(char *newPasswd);             //修改密码
+int initPasswd(char *newPasswd);               //初始化密码
 int buyerRegist(BuyerLink *buyerHead);         //彩民注册
 int loginSystem(BuyerLink *buyerHead);         //登录
 
 /**************Model层*彩民菜单*逻辑函数声明*********************/
 int printOneMessage(BuyerLink *buyerHead,char *name);//个人信息
-//void buyLottery();                           //购买彩票
-//void printOneRecord();                       //够彩记录
-//void rechargeAccount();                      //账户充值
-//void changePasswd();                         //修改密码
-//void logOffAccount();                        //注销账户
+//void buyLottery();                                 //购买彩票
+//void printOneRecord();                             //够彩记录
+int rechargeAccount(BuyerLink *buyerHead,char *name);//账户充值
+int changePasswd(BuyerLink *buyerHead,char *name);   //修改密码
+int identifyPasswd(char *passwd,int chance);         //输入比对原密码
+int logOffAccount(BuyerLink *buyerHead,char *name);  //注销账户
 
 /**************Model层*管理员菜单*逻辑函数声明*********************/
 //void publishLottery();                       //发行彩票
