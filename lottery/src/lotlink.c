@@ -104,6 +104,26 @@ int freeBuyerLinkAllNode(BuyerLink *buyerHead)
 	return 1;
 }
 
+int sortBuyerByName(BuyerLink *buyHead)
+{
+	if(NULL == buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return 0;
+	}
+	int len = getBuyerLinkLen(buyerHead);
+	int i = 0,j = 0;
+	for(i = 0;i < len - 1;++i)
+	{
+		for(j = i + 1;j < len;++j)
+		{
+
+		}
+	}
+	return 1;
+}
+
+
 /*
 * #include "lotlink.h"
 * 声 明：
@@ -251,13 +271,12 @@ int loadPubData(PubLink *pubHead)
 	if(0 != fread(&pub,sizeof(Pub),1,fprPub))
 	{
 		pubHead -> data = pub;
-		printf("id = %d   state = %d\n",pubHead -> data.issue,pubHead -> data.state);
+		memset(&pub,0,sizeof(fprPub));
 	}
 	while(0 != fread(&pub,sizeof(Pub),1,fprPub))
 	{
-		printf("id = %d   state = %d\n",pub.issue,pub.state);
-		memset(&pub,0,sizeof(Pub));
 		insertAfterPubLink(pubHead,&pub);
+		memset(&pub,0,sizeof(fprPub));
 	}
 	fclose(fprPub);
 	fprPub = NULL;
@@ -279,7 +298,6 @@ int savePubData(PubLink *pubHead)
 	while(NULL != pubHead)//PubLink头节点中有授权信息，所以头节点也保存
 	{
 		fwrite(&pubHead -> data,sizeof(Pub),1,fpsPub);
-		printf("state = %d  id = %d\n",pubHead -> data.state,pubHead -> data.issue);
 		pubHead = pubHead -> next;
 	}
 	fclose(fpsPub);
@@ -361,4 +379,111 @@ PubLink *getLastPubNodePoint(PubLink *pubHead)
 		pubHead = pubHead -> next;
 	}
 	return pubHead;
+}
+
+int loadBuyData(BuyLink *buyHead)
+{
+	if(NULL == buyHead)
+	{
+		printf(BUY_HEAD_IS_NULL);
+		return 0;
+	}
+	FILE *fprBuy = fopen("./file/buy.bin","rb");
+	if(NULL == fprBuy)
+	{
+		system("touch ./file/buy.bin");
+		return 1;
+	}
+	Buy buy = {0};
+	memset(&buy,0,sizeof(Buy));
+	while(0 != fread(&buy,sizeof(Buy),1,fprBuy))
+	{
+		insertAfterBuyLink(buyHead,&buy);
+		memset(&buy,0,sizeof(Buy));
+	}
+	fclose(fprBuy);
+	fprBuy = NULL;
+	return 1;
+}
+
+int saveBuyData(BuyLink *buyHead)
+{
+	if(NULL == buyHead)
+	{
+		printf(BUY_HEAD_IS_NULL);
+		return 0;
+	}
+	FILE *fpsBuy = fopen("./file/buy.bin","wb");
+	if(NULL == fpsBuy)
+	{
+		printf("buy.bin写打开失败！\n");
+		return 0;
+	}
+	buyHead = buyHead -> next;
+	while(NULL != buyHead)
+	{
+		fwrite(&buyHead -> data,sizeof(Buy),1,fpsBuy);
+		buyHead = buyHead -> next;
+	}
+	fclose(fpsBuy);
+	fpsBuy = NULL;
+	return 1;
+}
+
+int freeBuyLinkAllNode(BuyLink *buyHead)
+{
+	if(NULL == buyHead)
+	{
+		printf(BUY_HEAD_IS_NULL);
+		return 0;
+	}
+	BuyLink *pre = NULL;
+	while(NULL != buyHead)
+	{
+		pre = buyHead -> next;
+		free(BuyHead);
+		buyHead = pre;
+	}
+	printf("BuyLink释放完毕\n");
+	return 1;
+}
+
+int insertAfterBuyLink(BuyLink *buyHead,Buy *buy)
+{
+	if(NULL == buyHead)
+	{
+		printf(BUY_HEAD_IS_NULL);
+		return 0;
+	}
+	BuyLink *newNode = createBuyNode(buy);
+	while(NULL != buyHead)
+	{
+		buyHead = buyHead -> next;
+	}
+	buyHead -> next = newNode;
+	return 1;
+}
+BuyLink *createBuyNode(Buy *buy)
+{
+	BuyLink *newNode = (BuyLink *)calloc(1,sizeof(BuyLink));
+	newNode -> date = *buy;
+	newNode -> next = NULL;
+	return newNode;
+}
+BuyLink *getPreBuyNodePoint(BuyLink *buyHead,PubLink *pubHead,BuyLink *buyHead)
+{
+	return NULL;
+}
+BuyLink *getLastBuyNodePoint(BuyLink *buyHead)
+{
+	if(NULL == buyHead)
+	{	
+		printf(BUY_HEAD_IS_NULL);
+		return NULL;
+	}
+	while(NULL != buyHead -> next)
+	{
+		buyHead = buyHead -> next;
+	}
+	return buyHead;
 }

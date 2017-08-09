@@ -138,12 +138,20 @@ int buyerRegist(BuyerLink *buyerHead)
 	char name[20] = "";
 	printf("请输入账户名:");
 	scanf("%s",name);
-	if(NULL != getPreNodePoint(buyerHead,name))
+	if(0 == strcmp(name,"admin") || 0 == strcmp(name,"notary"))
 	{
 		printf("该用户名已被注册！\n");
 		return 0;
 	}
-	strcpy(buyer.name,name);
+	else
+	{
+		if(NULL != getPreNodePoint(buyerHead,name))
+		{
+			printf("该用户名已被注册！\n");
+			return 0;
+		}
+		strcpy(buyer.name,name);
+	}
 
 	/***************手机号码***********************/
 	char telNum[12] = "";
@@ -236,7 +244,7 @@ int loginSystem(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 			scanf("%s",passwd);
 			if(0 == strcmp(passwd,pre -> next ->data.passwd))
 			{
-				buyerMenuControl(buyerHead,name);//进入彩民菜单界面
+				buyerMenuControl(buyerHead,name,pubHead,buyHead);//进入彩民菜单界面
 				return 1;
 			}
 			else
@@ -601,6 +609,7 @@ int drawLottery(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 		last -> data.num[6] = 7;
 		last -> data.state = 1;
 		strcpy(last -> data.strState,"开奖");
+		savePubData(pubHead);
 		printf("开奖成功！\n");
 		return 1;
 	}
@@ -613,5 +622,56 @@ int drawLottery(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 	{
 		printf("error\n");
 		return 0;
+	}
+}
+
+int buyLottery(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
+{
+	if(NULL == buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return 0;
+	}
+	if(NULL == pubHead)
+	{
+		printf(PUB_HEAD_IS_NULL);
+		return 0;
+	}
+	if(NULL == buyHead)
+	{
+		printf(BUY_HEAD_IS_NULL);
+		return 0;
+	}
+	PubLink *last = getLastPubNodePoint(pubHead);
+	if(1 != last -> data.state && last -> data.issue > 0)
+	{
+		printf("「1.机选」「2.手选」:");
+		int choose = 0;
+		scanf("%d",&choose);
+		if(getchar() != '\n')
+		{
+			printf("格式错误！\n");
+			return 0;
+		}
+		if(1 == choose)
+		{
+			//machineSelect(buyerHead,pubHead,buyHead);
+			return 1;
+		}
+		else if(2 == choose)
+		{
+			//buyerSelect(buyerHead,pubHead,buyHead);
+			return 1;
+		}
+		else
+		{
+			printf("error\n");
+			return 0;
+		}
+	}
+	else
+	{
+		printf("新的一期彩票还没有发行，现在无法购买彩票！\n");
+		return 0;		
 	}
 }

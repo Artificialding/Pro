@@ -22,7 +22,7 @@ int loginSystem(BuyerLink *buyerHeadi,PubLink *pubHead,BuyLink *buyHead);  //登
 
 /**************Model层*彩民菜单*逻辑函数声明*********************/
 int printOneMessage(BuyerLink *buyerHead,char *name);//个人信息
-//void buyLottery();                                 //购买彩票
+int buyLottery(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead);//购买彩票
 //void printOneRecord();                             //购彩记录
 int rechargeAccount(BuyerLink *buyerHead,char *name);//账户充值
 int changePasswd(BuyerLink *buyerHead,char *name);   //修改密码
@@ -39,7 +39,7 @@ int printAllBuyerMessage(BuyerLink *buyerHead);//所有彩民信息
 /**************Model层*公正员菜单*逻辑函数声明*********************/
 int authorization(PubLink *pubHead);           //授权发行
 int drawLottery(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead);//彩票开奖
-//void printdrawRecord();                      //查看发行记录
+//int yaoHaoAlgorithm();                       //摇号算法
 
 
 #endif

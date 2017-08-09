@@ -63,7 +63,7 @@ void mainMenuControl(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 	}
 }
 
-void buyerMenuControl(BuyerLink *buyerHead,char *name)
+void buyerMenuControl(BuyerLink *buyerHead,char *name,PubLink *pubHead,BuyLink *buyHead)
 {
 	system("clear");
 	if(NULL == buyerHead)
@@ -91,6 +91,7 @@ void buyerMenuControl(BuyerLink *buyerHead,char *name)
 				printOneMessage(buyerHead,name);
 				break;
 			case 2://购买彩票
+				buyLottery(buyerHead,pubHead,buyHead);
 				break;
 			case 3://历史记录
 				break;
@@ -197,6 +198,7 @@ int notaryMenuControl(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 				drawLottery(buyerHead,pubHead,buyHead);
 				break;
 			case 3://查看历史发行记录
+				printPubRecord(pubHead);
 				break;
 			case 0://退出登录
 				return 0;

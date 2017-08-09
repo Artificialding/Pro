@@ -69,21 +69,32 @@ typedef struct buyLink{
 int loadData(BuyerLink *buyerHead);                         //加载文件彩民信息到链表
 int saveData(BuyerLink *buyerHead);                         //保存彩民信息链表到文件
 int freeBuyerLinkAllNode(BuyerLink *buyerHead);             //释放所有彩民节点
-BuyerLink *createBuyerNode(Buyer *buyer);                   //创建彩民节点
+int sortBuyerByName(BuyerLink *buyHead);                    //按用户名排序
+int getBuyerLinkLen(BuyerLink *buyHead);                    //获取彩民链表长度
+int sortBuyerById(BuyerLink *buyHead);                      //按ID排序
+int sortBuyerBybalance(BuyerLink *buyHead);                 //按余额排序
 int insertAfterBuyerLink(BuyerLink *buyerHead,Buyer *buyer);//后插彩民节点
+BuyerLink *createBuyerNode(Buyer *buyer);                   //创建彩民节点
 BuyerLink *getPreNodePoint(BuyerLink *buyHead,char *name);  //获取彩民前驱节点
-//void delete_node(void);//删除指定节点
-//void sort_node(void);//排序
+//int deleteOneNode(BuyerLink *buyHead);                    //删除指定节点
+
 
 /******************************操作彩票链表函数**********************/
 int loadPubData(PubLink *pubHead);
 int savePubData(PubLink *pubHead);
 int freePubLinkAllNode(PubLink *pubHead);
-PubLink *createPubNode(Pub *pub);
 int insertAfterPubLink(PubLink *pubHead,Pub *pub);
+PubLink *createPubNode(Pub *pub);
 PubLink *getPrePubNodePoint(PubLink *pubHead,int issue);
 PubLink *getLastPubNodePoint(PubLink *pubHead);
 
 /*****************************操作购彩链表函数************************/
+int loadBuyData(BuyLink *buyHead);
+int saveBuyData(BuyLink *buyHead);
+int freeBuyLinkAllNode(BuyLink *buyHead);
+int insertAfterBuyLink(BuyLink *buyHead,Buy *buy);
+BuyLink *createBuyNode(Buy *buy);
+BuyLink *getPreBuyNodePoint(BuyLink *buyHead,int issue,int id);
+BuyLink *getLastBuyNodePoint(BuyLink *buyHead);
 
 #endif
