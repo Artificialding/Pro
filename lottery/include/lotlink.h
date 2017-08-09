@@ -37,8 +37,9 @@ typedef struct buyerLink
 typedef struct publish{
 	int issue;        //发行期号	
 	double price;     //每注单价
-	int num;          //中奖号码
+	int num[7];       //中奖号码
 	int state;        //1:已开奖0：未开奖
+	char strState[10]; //开奖 未开奖
 	int sellCount;    //卖出注数
 	double totalMoney;//奖池金额
 }Pub;
@@ -74,5 +75,15 @@ BuyerLink *getPreNodePoint(BuyerLink *buyHead,char *name);  //获取彩民前驱
 //void delete_node(void);//删除指定节点
 //void sort_node(void);//排序
 
+/******************************操作彩票链表函数**********************/
+int loadPubData(PubLink *pubHead);
+int savePubData(PubLink *pubHead);
+int freePubLinkAllNode(PubLink *pubHead);
+PubLink *createPubNode(Pub *pub);
+int insertAfterPubLink(PubLink *pubHead,Pub *pub);
+PubLink *getPrePubNodePoint(PubLink *pubHead,int issue);
+PubLink *getLastPubNodePoint(PubLink *pubHead);
+
+/*****************************操作购彩链表函数************************/
 
 #endif

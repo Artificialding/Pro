@@ -31,7 +31,8 @@ int loadData(BuyerLink *buyerHead)
 	FILE *fprBuyer = fopen("./file/buyer.bin","rb");
 	if(NULL == fprBuyer)
 	{
-		system("touch buyer.bin");
+		system("mkdir file");
+		system("touch ./file/buyer.bin");
 		return 1;
 	}
 	Buyer buyer = {0};
@@ -231,3 +232,133 @@ void sort_node(BuyerLink *head)
 	printf("排序成功,请前往查看\n");
 }
 #endif
+
+int loadPubData(PubLink *pubHead)
+{
+	if(NULL == pubHead)
+	{
+		printf(PUB_HEAD_IS_NULL);
+		return 0;
+	}
+	FILE *fprPub = fopen("./file/pub.bin","rb");
+	if(NULL == fprPub)
+	{
+		system("touch ./file/pub.bin");
+		return 1;
+	}
+	Pub pub = {0};
+	memset(&pub,0,sizeof(Pub));
+	if(0 != fread(&pub,sizeof(Pub),1,fprPub))
+	{
+		pubHead -> data = pub;
+		printf("id = %d   state = %d\n",pubHead -> data.issue,pubHead -> data.state);
+	}
+	while(0 != fread(&pub,sizeof(Pub),1,fprPub))
+	{
+		printf("id = %d   state = %d\n",pub.issue,pub.state);
+		memset(&pub,0,sizeof(Pub));
+		insertAfterPubLink(pubHead,&pub);
+	}
+	fclose(fprPub);
+	fprPub = NULL;
+	return 1;
+}
+int savePubData(PubLink *pubHead)
+{
+	if(NULL == pubHead)
+	{
+		printf(PUB_HEAD_IS_NULL);
+		return 0;
+	}
+	FILE *fpsPub = fopen("./file/pub.bin","wb");
+	if(NULL == fpsPub)
+	{	
+		printf("pub.bin文件写打开失败！\n");
+		return 0;
+	}
+	while(NULL != pubHead)//PubLink头节点中有授权信息，所以头节点也保存
+	{
+		fwrite(&pubHead -> data,sizeof(Pub),1,fpsPub);
+		printf("state = %d  id = %d\n",pubHead -> data.state,pubHead -> data.issue);
+		pubHead = pubHead -> next;
+	}
+	fclose(fpsPub);
+	fpsPub = NULL;
+	return 1;
+}
+int freePubLinkAllNode(PubLink *pubHead)
+{
+	if(NULL == pubHead)
+	{
+		printf(PUB_HEAD_IS_NULL);
+		return 0;
+	}
+	PubLink *pre = NULL;
+	while(NULL != pubHead)
+	{
+		pre = pubHead -> next;
+		free(pubHead);
+		pubHead = pre;
+	}
+	printf("PubLink释放完毕！\n");
+	return 1;
+}
+
+PubLink *createPubNode(Pub *pub)
+{
+	PubLink *newNode = (PubLink *)calloc(1,sizeof(PubLink));
+	newNode -> data = *pub;
+	newNode -> next = NULL;
+	return newNode;
+}
+
+int insertAfterPubLink(PubLink *pubHead,Pub *pub)
+{
+	if(NULL == pubHead)
+	{
+		printf(PUB_HEAD_IS_NULL);
+		return 0;
+	}
+	PubLink *newNode = createPubNode(pub);
+	while(NULL != pubHead -> next)
+	{
+		pubHead = pubHead -> next;
+	}
+	pubHead -> next = newNode;
+	return 1;
+}
+
+PubLink *getPrePubNodePoint(PubLink *pubHead,int issue)
+{
+	if(NULL == pubHead)
+	{
+		printf(PUB_HEAD_IS_NULL);
+		return 0;
+	}
+	PubLink *pre = pubHead;
+	pubHead = pubHead -> next;
+	while(NULL != pubHead)
+	{
+		if(issue == pubHead -> data.issue)
+		{
+			return pre;
+		}
+		pre = pubHead;
+		pubHead = pubHead -> next;
+	}
+	return NULL;
+}
+
+PubLink *getLastPubNodePoint(PubLink *pubHead)
+{
+	if(NULL == pubHead)
+	{
+		printf(PUB_HEAD_IS_NULL);
+		return NULL;
+	}
+	while(NULL != pubHead -> next)
+	{
+		pubHead = pubHead -> next;
+	}
+	return pubHead;
+}

@@ -12,9 +12,9 @@
 int main(void)
 {
 	BuyerLink *buyerHead = (BuyerLink *)calloc(1,sizeof(BuyerLink));
-	//PubLink *pubHead = (PubLink *)calloc(1,sizeof(PubLink));
-	//BuyLink *buyLink = (BuyLink *)calloc(1,sizeof(BuyLink));
-	mainMenuControl(buyerHead);
+	PubLink *pubHead = (PubLink *)calloc(1,sizeof(PubLink));
+	BuyLink *buyHead = (BuyLink *)calloc(1,sizeof(BuyLink));
+	mainMenuControl(buyerHead,pubHead,buyHead);
 	
 
 

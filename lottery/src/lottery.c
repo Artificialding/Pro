@@ -181,7 +181,7 @@ int buyerRegist(BuyerLink *buyerHead)
 	return 1;
 }
 /******************登录************************/
-int loginSystem(BuyerLink *buyerHead)
+int loginSystem(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 {
 	char name[20] = "";
 	char passwd[10] = "";
@@ -193,7 +193,7 @@ int loginSystem(BuyerLink *buyerHead)
 		scanf("%s",passwd);
 		if(0 == strcmp("admin",passwd))
 		{
-			adminMenuControl(buyerHead);	//进入管理员菜单界面
+			adminMenuControl(buyerHead,pubHead,buyHead);	//进入管理员菜单界面
 			return 1;
 		}
 		else
@@ -208,7 +208,7 @@ int loginSystem(BuyerLink *buyerHead)
 		scanf("%s",passwd);
 		if(0 == strcmp("notary",passwd))
 		{
-			notaryMenuControl();	//进入公正员界面
+			notaryMenuControl(buyerHead,pubHead,buyHead);	//进入公正员界面
 			return 1;
 		}
 		else
@@ -449,4 +449,169 @@ int printAllBuyerMessage(BuyerLink *buyerHead)
 		buyerHead = buyerHead -> next;
 	}
 	return 1;
+}
+int publishLottery(PubLink *pubHead)
+{
+	if(NULL == pubHead)
+	{
+		printf("PUB_HEAD_IS_NULL");
+		return 0;
+	}
+	if(0 == pubHead -> data.state)
+	{
+		printf("彩票还没有获得发行授权，请公证员授权！\n");
+		return 0;
+	}
+	else
+	{
+		PubLink *last = getLastPubNodePoint(pubHead);
+		if(0 == last -> data.state)
+		{
+			printf("上期没有开奖，无法再发行新期彩票！\n");
+			return 0;
+		}
+		else
+		{
+			Pub pub;
+			memset(&pub,0,sizeof(Pub));
+			pub.issue = last -> data.issue + 1;
+			pub.price = 2.00;
+			int i = 0;
+			for(i = 0;i < 7;++i)
+			{
+				pub.num[i] = 0;
+			}
+			pub.state = 0;
+			strcpy(pub.strState,"未开奖");
+			pub.sellCount = 0;
+			pub.totalMoney = last -> data.totalMoney;
+			insertAfterPubLink(pubHead,&pub);
+			printf("发行OK\n");
+			return 1;
+		}
+	}
+}
+int printPubRecord(PubLink *pubHead)
+{
+	if(NULL == pubHead)
+	{
+		printf(PUB_HEAD_IS_NULL);
+		return 0;
+	}
+	printf("发行记录：\n");
+	printf("发行期号\t中奖号码\t\t每注单价\t卖出注数\t奖池金额\t开奖状态\n");
+	pubHead = pubHead -> next;
+	Pub pub;
+	memset(&pub,0,sizeof(Pub));
+	while(NULL != pubHead)
+	{
+		pub = pubHead -> data;
+		printf("%08d\t\033[31m%02d %02d %02d %02d %02d %02d \033[0m\033[34m%02d\033[0m\t%.2lf￥\t\t%08d\t%.2lf\t\t%s\n",\
+		pub.issue,\
+		pub.num[0],pub.num[1],pub.num[2],pub.num[3],pub.num[4],pub.num[5],pub.num[6],\
+		pub.price,\
+		pub.sellCount,\
+		pub.totalMoney,\
+		pub.strState);
+		pubHead = pubHead -> next;
+		memset(&pub,0,sizeof(Pub));
+	}
+	return 1;
+}
+
+int authorization(PubLink *pubHead)
+{
+	if(NULL == pubHead)
+	{
+		printf(PUB_HEAD_IS_NULL);
+		return 0;
+	}
+	printf("是否授权发行彩票？\n");
+	printf("「授权」Y/y    「不授权」N/n:");
+	char ch = getchar();
+	if(ch == 'Y' || ch == 'y')
+	{
+		pubHead -> data.state = 1;
+		savePubData(pubHead);
+		return 1;
+	}
+	else if(ch == 'N' || ch == 'n')
+	{
+		printf("取消授权成功！\n");
+		return 0;
+	}
+	else
+	{
+		printf("error\n");
+		return 0;
+	}
+}
+
+
+int drawLottery(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
+{
+	if(NULL == buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return 0;
+	}
+	if(NULL == pubHead)
+	{
+		printf(PUB_HEAD_IS_NULL);
+		return 0;
+	}
+	if(NULL == buyHead)
+	{
+		printf(BUY_HEAD_IS_NULL);
+		return 0;
+	}
+	printf("「机器摇号」请按1  「人工定号」请按2：\n");
+	int choose = 0;
+	scanf("%d",&choose);
+	if(getchar() != '\n')
+	{
+		printf("格式有误！\n");
+		return 0;
+	}
+	if(1 == choose)
+	{
+		printf("机器摇号完成！\n");
+	}
+	else if(2 == choose)
+	{
+		printf("人工摇号成功！\n");
+	}
+	else
+	{
+		printf("选择有误！\n");
+		return 0;
+	}
+	printf("公正员确定开奖？\n");
+	printf("「确定」回车  「取消」ESC:");
+	char ch = getchar();
+	if(ch == '\n')
+	{
+		PubLink *last = getLastPubNodePoint(pubHead);
+		last -> data.num[0] = 1;
+		last -> data.num[1] = 2;
+		last -> data.num[2] = 3;
+		last -> data.num[3] = 4;
+		last -> data.num[4] = 5;
+		last -> data.num[5] = 6;
+		last -> data.num[6] = 7;
+		last -> data.state = 1;
+		strcpy(last -> data.strState,"开奖");
+		printf("开奖成功！\n");
+		return 1;
+	}
+	else if(ch == 27)
+	{
+		printf("取消开奖成功！\n");
+		return 0;
+	}
+	else
+	{
+		printf("error\n");
+		return 0;
+	}
 }

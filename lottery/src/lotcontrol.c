@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include "lotlink.h"
 #include "lottery.h"
-void mainMenuControl(BuyerLink *buyerHead)
+void mainMenuControl(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 {
 	system("clear");
 	if(NULL == buyerHead)
@@ -20,7 +20,13 @@ void mainMenuControl(BuyerLink *buyerHead)
 		printf(BUYER_HEAD_IS_NULL);
 		return;
 	}
+	if(NULL == pubHead)
+	{
+		printf(PUB_HEAD_IS_NULL);
+		return;
+	}
 	loadData(buyerHead);
+	loadPubData(pubHead);
 	int choose = 0;
 	while(1)
 	{
@@ -38,14 +44,16 @@ void mainMenuControl(BuyerLink *buyerHead)
 		switch(choose)
 		{
 			case 1://用户登录
-				loginSystem(buyerHead);
+				loginSystem(buyerHead,pubHead,buyHead);
 				break;
 			case 2://用户注册
 				buyerRegist(buyerHead);
 				break;
 			case 0://退出系统
 				saveData(buyerHead);
+				savePubData(pubHead);
 				freeBuyerLinkAllNode(buyerHead);
+				freePubLinkAllNode(pubHead);
 				printf("退出成功\n");
 				return;
 			default:
@@ -107,7 +115,7 @@ void buyerMenuControl(BuyerLink *buyerHead,char *name)
 	}
 }
 
-int adminMenuControl(BuyerLink *buyerHead)
+int adminMenuControl(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 {
 	system("clear");
 	if(NULL == buyerHead)
@@ -132,13 +140,17 @@ int adminMenuControl(BuyerLink *buyerHead)
 		switch(choose)
 		{
 			case 1://发行彩票
+				publishLottery(pubHead);
 				break;
-			case 2://所有彩民信息
+			case 2://发行记录
+				printPubRecord(pubHead);
+				break;
+			case 3://所有彩民信息
 				printAllBuyerMessage(buyerHead);
 				break;
-			case 3://查找彩民
+			case 4://查找彩民
 				break;
-			case 4://排序
+			case 5://排序
 				break;
 			case 0://退出登录
 				return 1;
@@ -149,9 +161,19 @@ int adminMenuControl(BuyerLink *buyerHead)
 	}
 }
 
-void notaryMenuControl(void)
+int notaryMenuControl(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 {
 	system("clear");
+	if(NULL == buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return 0;
+	}
+	if(NULL == pubHead)
+	{
+		printf(PUB_HEAD_IS_NULL);
+		return 0;
+	}
 	int choose = 0;
 	while(1)
 	{
@@ -168,12 +190,16 @@ void notaryMenuControl(void)
 		}
 		switch(choose)
 		{
-			case 1://开奖
+			case 1://授权发行
+				authorization(pubHead);
 				break;
-			case 2://查看历史发行记录
+			case 2://彩票开奖
+				drawLottery(buyerHead,pubHead,buyHead);
+				break;
+			case 3://查看历史发行记录
 				break;
 			case 0://退出登录
-				return;
+				return 0;
 			default:
 				printf("请选择菜单中有的选项！\n");
 				break;

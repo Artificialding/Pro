@@ -18,7 +18,7 @@ int identityTelNum(char *telNum);              //识别手机号码
 int initPasswd(char *newPasswd,int chance);    //初始化密码
 int getCurrentMaxId(BuyerLink *buyerHead);     //获取当前最大id值
 int buyerRegist(BuyerLink *buyerHead);         //彩民注册
-int loginSystem(BuyerLink *buyerHead);         //登录
+int loginSystem(BuyerLink *buyerHeadi,PubLink *pubHead,BuyLink *buyHead);  //登录
 
 /**************Model层*彩民菜单*逻辑函数声明*********************/
 int printOneMessage(BuyerLink *buyerHead,char *name);//个人信息
@@ -30,13 +30,15 @@ int identifyPasswd(char *passwd,int chance);         //输入比对原密码
 int logOffAccount(BuyerLink *buyerHead,char *name);  //注销账户
 
 /**************Model层*管理员菜单*逻辑函数声明*********************/
-//void publishLottery();                       //发行彩票
+int publishLottery(PubLink *pubHead);          //发行彩票
+int printPubRecord(PubLink *pubHead);          //发行记录
 int printAllBuyerMessage(BuyerLink *buyerHead);//所有彩民信息
 //void selectBuyer();                          //查找彩民
 //void sort();                                 //排序
 
 /**************Model层*公正员菜单*逻辑函数声明*********************/
-//void drawLottery();                          //开奖
+int authorization(PubLink *pubHead);           //授权发行
+int drawLottery(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead);//彩票开奖
 //void printdrawRecord();                      //查看发行记录
 
 
