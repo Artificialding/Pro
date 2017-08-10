@@ -34,7 +34,7 @@ int publishLottery(PubLink *pubHead);          //发行彩票
 int printPubRecord(PubLink *pubHead);          //发行记录
 int printAllBuyerMessage(BuyerLink *buyerHead);//所有彩民信息
 //void selectBuyer();                          //查找彩民
-//void sort();                                 //排序
+int sortBuyerMessage(BuyerLink *buyerHead);           //排序
 
 /**************Model层*公正员菜单*逻辑函数声明*********************/
 int authorization(PubLink *pubHead);           //授权发行

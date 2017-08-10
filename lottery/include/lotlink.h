@@ -69,13 +69,13 @@ typedef struct buyLink{
 int loadData(BuyerLink *buyerHead);                         //加载文件彩民信息到链表
 int saveData(BuyerLink *buyerHead);                         //保存彩民信息链表到文件
 int freeBuyerLinkAllNode(BuyerLink *buyerHead);             //释放所有彩民节点
-int sortBuyerByName(BuyerLink *buyHead);                    //按用户名排序
-int getBuyerLinkLen(BuyerLink *buyHead);                    //获取彩民链表长度
-int sortBuyerById(BuyerLink *buyHead);                      //按ID排序
-int sortBuyerBybalance(BuyerLink *buyHead);                 //按余额排序
+int getBuyerLinkLen(BuyerLink *buyerHead);                    //获取彩民链表长度
+int sortBuyerByName(BuyerLink *buyerHead);                    //按用户名排序
+int sortBuyerById(BuyerLink *buyerHead);                      //按ID排序
+int sortBuyerByBalance(BuyerLink *buyerHead);                 //按余额排序
 int insertAfterBuyerLink(BuyerLink *buyerHead,Buyer *buyer);//后插彩民节点
 BuyerLink *createBuyerNode(Buyer *buyer);                   //创建彩民节点
-BuyerLink *getPreNodePoint(BuyerLink *buyHead,char *name);  //获取彩民前驱节点
+BuyerLink *getPreNodePoint(BuyerLink *buyerHead,char *name);  //获取彩民前驱节点
 //int deleteOneNode(BuyerLink *buyHead);                    //删除指定节点
 
 

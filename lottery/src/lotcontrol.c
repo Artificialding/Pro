@@ -152,6 +152,7 @@ int adminMenuControl(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 			case 4://查找彩民
 				break;
 			case 5://排序
+				sortBuyerMessage(buyerHead);
 				break;
 			case 0://退出登录
 				return 1;

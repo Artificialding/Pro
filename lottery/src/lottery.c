@@ -526,7 +526,16 @@ int printPubRecord(PubLink *pubHead)
 	}
 	return 1;
 }
+int sortBuyerMessage(BuyerLink *buyHead)
+{
+	if(NULL == buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return 0;
+	}
 
+	return 1;
+}
 int authorization(PubLink *pubHead)
 {
 	if(NULL == pubHead)

@@ -103,8 +103,83 @@ int freeBuyerLinkAllNode(BuyerLink *buyerHead)
 	printf("BuyerLink释放完毕\n");
 	return 1;
 }
+int getBuyerLinkLen(BuyerLink *buyerHead)
+{
+	if(NULL == buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return 0;
+	}
+	if(NULL == buyerHead -> next)
+	{
+		return 0;
+	}
+	buyerHead = buyerHead -> next;
+	return getBuyerLinkLen(buyerHead) + 1;
+}
 
-int sortBuyerByName(BuyerLink *buyHead)
+int sortBuyerByName(BuyerLink *buyerHead)
+{
+	if(NULL == buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return 0;
+	}
+	BuyerLink *i = buyerHead -> next;
+	BuyerLink *j = NULL;
+	BuyerLink *cursorMin = NULL;
+	while(NULL != i)//改进选择排序
+	{
+		cursorMin = i;
+		j = i -> next;
+		while(NULL != j)
+		{
+			if(strcmp(i -> data.name,j -> data.name) <= 0)
+			{
+				cursorMin = i;
+			}
+			else
+			{
+				cursorMin = j;
+			}
+			j = j -> next;
+		}
+		Buyer temp = i -> data;
+		i -> data = cursorMin -> data;
+		cursorMin -> data = temp;
+		i = i -> next;
+	}
+	saveData(buyerHead);
+	return 1;
+}
+int sortBuyerById(BuyerLink *buyerHead)
+{
+	if(NULL == buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return 0;
+	}
+	BuyerLink *i = buyerHead -> next;
+	BuyerLink *j = NULL;
+	while(NULL != i -> next)//选择排序
+	{
+		j = i -> next;
+		while(NULL != j)
+		{
+			if(i -> data.id > j -> data.id)
+			{
+				Buyer temp = i -> data;
+				i -> data = j -> data;
+				j -> data = temp;
+			}
+			j = j -> next;
+		}
+		i = i -> next;
+	}
+	return 1;
+}
+
+int sortBuyerByBalance(BuyerLink *buyerHead)
 {
 	if(NULL == buyerHead)
 	{
@@ -113,14 +188,24 @@ int sortBuyerByName(BuyerLink *buyHead)
 	}
 	int len = getBuyerLinkLen(buyerHead);
 	int i = 0,j = 0;
-	for(i = 0;i < len - 1;++i)
+	BuyerLink *cursor = buyerHead -> next;
+	for(i = 0;i < len -1;++i)//冒泡排序
 	{
-		for(j = i + 1;j < len;++j)
+		for(j = 0;j < len - 1 - i;++i)
 		{
-
-		}
+			if(cursor -> data.balance > cursor -> next -> data.balance)
+			{
+				Buyer temp = cursor -> data;
+				cursor -> data = cursor -> next -> data;
+				cursor -> next -> data = temp;
+			}
+			cursor = cursor -> next;		
+		}	
+		cursor = buyerHead -> next;
 	}
+	saveData(buyerHead);
 	return 1;
+	
 }
 
 
@@ -441,7 +526,7 @@ int freeBuyLinkAllNode(BuyLink *buyHead)
 	while(NULL != buyHead)
 	{
 		pre = buyHead -> next;
-		free(BuyHead);
+		free(buyHead);
 		buyHead = pre;
 	}
 	printf("BuyLink释放完毕\n");
@@ -466,11 +551,11 @@ int insertAfterBuyLink(BuyLink *buyHead,Buy *buy)
 BuyLink *createBuyNode(Buy *buy)
 {
 	BuyLink *newNode = (BuyLink *)calloc(1,sizeof(BuyLink));
-	newNode -> date = *buy;
+	newNode -> data = *buy;
 	newNode -> next = NULL;
 	return newNode;
 }
-BuyLink *getPreBuyNodePoint(BuyLink *buyHead,PubLink *pubHead,BuyLink *buyHead)
+BuyLink *getPreBuyNodePoint(BuyLink *buyHead,int issue,int id)
 {
 	return NULL;
 }
