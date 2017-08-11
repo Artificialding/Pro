@@ -675,6 +675,19 @@ BuyLink *createBuyNode(Buy *buy)
 }
 BuyLink *getPreBuyNodePoint(BuyLink *buyHead,int issue)
 {
+	if(NULL == buyHead)
+	{
+		printf(BUY_HEAD_IS_NULL);
+		return NULL;
+	}
+	while(NULL != buyHead -> next)
+	{
+		if(buyHead -> next -> data.issue == issue)
+		{
+			return buyHead;
+		}
+		buyHead = buyHead -> next;
+	}
 	return NULL;
 }
 BuyLink *getLastBuyNodePoint(BuyLink *buyHead)

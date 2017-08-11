@@ -25,8 +25,14 @@ void mainMenuControl(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 		printf(PUB_HEAD_IS_NULL);
 		return;
 	}
+	if(NULL == buyHead)
+	{
+		printf(BUY_HEAD_IS_NULL);
+		return;
+	}
 	loadData(buyerHead);
 	loadPubData(pubHead);
+	loadBuyData(buyHead);
 	int choose = 0;
 	while(1)
 	{
@@ -52,8 +58,10 @@ void mainMenuControl(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 			case 0://退出系统
 				saveData(buyerHead);
 				savePubData(pubHead);
+				saveBuyData(buyHead);
 				freeBuyerLinkAllNode(buyerHead);
 				freePubLinkAllNode(pubHead);
+				freeBuyLinkAllNode(buyHead);
 				printf("退出成功\n");
 				return;
 			default:

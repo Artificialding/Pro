@@ -616,37 +616,36 @@ int drawLottery(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 		printf("格式有误！\n");
 		return 0;
 	}
+	int num[7] = {0};
 	if(1 == choose)
 	{
-		int num[7] = {0};
-		if(1 == machineCreate(pubHead,num))
+		if(1 == machineCreate(num))
 		{
 			printf("机器摇号完成！\n");
-			printf("出球号码是:\033[31m%02d %02d %02d %02d %02d %02d \033[0m%02d\n",\
+			printf("出球号码是:\033[31m%02d %02d %02d %02d %02d %02d\033[0m \033[34m%02d\033[0m\n",\
 			num[0],\
 			num[1],\
 			num[2],\
 			num[3],\
 			num[4],\
 			num[5],\
-			num[6],\
+			num[6]
 			);
 		}
 	}
 	else if(2 == choose)
-	{
-		
-		if(1 == notaryCreate(pubHead))
+	{	
+		if(1 == notaryCreate(num))
 		{
 			printf("人工摇号成功！\n");
-			printf("出球号码是:\033[31m%02d %02d %02d %02d %02d %02d \033[0m%02d\n",\
+			printf("出球号码是:\033[31m%02d %02d %02d %02d %02d %02d\033[0m \033[34m%02d\033[0m\n",\
 			num[0],\
 			num[1],\
 			num[2],\
 			num[3],\
 			num[4],\
 			num[5],\
-			num[6],\
+			num[6]
 			);
 		}
 	}
@@ -672,9 +671,18 @@ int drawLottery(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 		strcpy(last -> data.strState,"开奖");
 		savePubData(pubHead);
 		printf("开奖成功！\n");
+		printf("第%d期双色球开奖号码是:\033[31m%02d %02d %02d %02d %02d %02d\033[0m \033[34m%02d\033[0m\n",\
+		last -> data.issue,\
+		last -> data.num[0],\
+		last -> data.num[1],\
+		last -> data.num[2],\
+		last -> data.num[3],\
+		last -> data.num[4],\
+		last -> data.num[5],\
+		last -> data.num[6]
+		);
 		savePubData(pubHead);
-		awardBuyer(pubHead,buyHead);
-		saveBuyData(buyHead);
+		awardBuyer(pubHead,buyHead,buyerHead);//发奖金
 		return 1;
 	}
 	else if(ch == 27)
@@ -688,9 +696,8 @@ int drawLottery(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 		return 0;
 	}
 }
-int machineCreate(Pub *pub)
+int machineCreate(int *num)
 {
-	int num[7] = {0};
 	srand(time(NULL));
 	int i = 0;
 	for(i = 0;i < 6;++i)
@@ -711,19 +718,14 @@ int machineCreate(Pub *pub)
 			}
 		}
 	}
-	for(i = 0;i < 7;++i)
-	{
-		pub.num[i] = num[i];		
-	}
 	return 1;
 }
-int notaryCreate(Pub *pub)
+int notaryCreate(int *num)
 {
 	int i = 0;
-	int num[7] = {0};
 	for(i = 0;i < 6;++i)
 	{
-		printf("请输入第%d个红球出球号码(1 ~ 33):");
+		printf("请输入第%d个红球出球号码(1 ~ 33):",i + 1);
 		scanf("%d",&num[i]);
 		if(getchar() != '\n')
 		{
@@ -753,7 +755,7 @@ int notaryCreate(Pub *pub)
 	return 1;
 }
 
-int awardBuyer(PubLink *pubHead,BuyLink *buyHead)
+int awardBuyer(PubLink *pubHead,BuyLink *buyHead,BuyerLink *buyerHead)
 {
 	if(NULL == pubHead)
 	{
@@ -765,62 +767,94 @@ int awardBuyer(PubLink *pubHead,BuyLink *buyHead)
 		printf(BUY_HEAD_IS_NULL);
 		return 0;
 	}
-	PubLink *pub = getLastPubNodePoint(pubHead);
-	int issue = pub -> data.issue;
+	if(NULL == buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return 0;
+	}
+	PubLink *lastPubNode = getLastPubNodePoint(pubHead);
+	int issue = lastPubNode -> data.issue;
 	int i = 0;
 	int num[7] = {0};
 	int level = 0;
 	for(i = 0;i < 7;++i)
 	{
-		num[i] = pub -> data.num[i];	
+		num[i] = lastPubNode -> data.num[i];	
 	}
-	BuyLink *cursor = getProBuyNodePoint(buyHead,issue) -> next;
+	BuyLink *cursor = getPreBuyNodePoint(buyHead,issue) -> next;
 	if(NULL == cursor)
 	{
-		printf("目前还没有彩民购买彩票！\n");
+		printf("目前还没有彩民购买本期彩票！\n");
 		return 0;
 	}
-	Buy buy;
-	memset(&buy,0,sizeof(Buy));
 	while(NULL != cursor)
 	{
-		buy = cursor -> data;
-		level = getLevel(num,buy.buyNum);
+		BuyerLink *buyerNode = getPreNodePoint(buyerHead,cursor -> data.buyerData.name) -> next;
+		level = getLevel(num,cursor -> data.buyNum);
 		printf("中奖信息公布:\n");
+		printf("发行期号\t彩票ID\t账户名\t中奖等级\t购买号码\t\t购买注数\t中奖金额\t\n");
 		switch(level)
 		{
 			case 1://一等奖
-				buy.buyData.balance += 10000 * buy.buyCount;
-				buy
-				printAwardBuyerMessage(buy);
+				cursor -> data.money = 10000 * cursor -> data.buyCount;
+				buyerNode -> data.balance += cursor -> data.money;
+				printAwardBuyerMessage(cursor,level);
 				break;
 			case 2://二等奖
-				buy.buyData.balance += 5000 * buy.buyCount;
+				cursor -> data.money = 5000 * cursor -> data.buyCount;
+				buyerNode -> data.balance += cursor -> data.money;
+				printAwardBuyerMessage(cursor,level);
 				break;	
 			case 3://三等奖
-				buy.buyData.balance += 3000 * buy.buyCount;
+				cursor -> data.money = 3000 * cursor -> data.buyCount;
+				buyerNode -> data.balance += cursor -> data.money;
+				printAwardBuyerMessage(cursor,level);
 				break;
 			case 4://四等奖
-				buy.buyData.balance += 200 * buy.buyCount;
+				cursor -> data.money = 200 * cursor -> data.buyCount;
+				buyerNode -> data.balance += cursor -> data.money;
+				printAwardBuyerMessage(cursor,level);				
 				break;
-			case 5://五等降
-				buy.buyData.balance += 10 * buy.buyCount;
+			case 5://五等奖
+				cursor -> data.money = 10 * cursor -> data.buyCount;
+				buyerNode -> data.balance += cursor -> data.money;
+				printAwardBuyerMessage(cursor,level);
 				break;
 			case 6://六等奖
-				buy.buyData.balance += 5 * buy.buyCount;
+				cursor -> data.money = 5 * cursor -> data.buyCount;
+				buyerNode -> data.balance += cursor -> data.money;
+				printAwardBuyerMessage(cursor,level);
 				break;
 			case 0://没中奖
-				buy.buyData.balance += 0;
+				break;
 			default:
 				printf("error\n");
+				saveBuyData(buyHead);
+				saveData(buyerHead);
 				return 0;
 		}
 	}
+	saveBuyData(buyHead);
+	saveData(buyerHead);
 	return 1;
 }
-int printAwardBuyerMessage(Buy *buy)
+int printAwardBuyerMessage(BuyLink *cursor,int level)
 {
-		
+	printf("%08d\t%08d\t%s\t\t%d\033[31m%02d %02d %02d %02d %02d %02d\033[0m \033[34m%02d\033[0m\t%d\t%.2lf",\
+	cursor -> data.issue,\
+	cursor -> data.id,\
+	cursor -> data.buyerData.name,\
+	level,\
+	cursor -> data.buyNum[0],\
+	cursor -> data.buyNum[1],\
+	cursor -> data.buyNum[2],\
+	cursor -> data.buyNum[3],\
+	cursor -> data.buyNum[4],\
+	cursor -> data.buyNum[5],\
+	cursor -> data.buyNum[6],\
+	cursor -> data.buyCount,\
+	cursor -> data.money);
+	return 1;
 }
 int getLevel(int *pubNum,int *buyNum)
 {
@@ -860,26 +894,26 @@ int getLevel(int *pubNum,int *buyNum)
 			{
 				++countRed;
 			}
-			if(6 == countRed)
-			{
-				return 1;
-			}
-			else if(5 == countRed)
-			{
-				return 3;
-			}
-			else if(4 == countRed)
-			{
-				return 4;
-			}
-			else if(3 == countRed)
-			{
-				return 5;
-			}
-			else
-			{
-				return 6;
-			}
+		}
+		if(6 == countRed)
+		{
+			return 1;
+		}
+		else if(5 == countRed)
+		{
+			return 3;
+		}
+		else if(4 == countRed)
+		{
+			return 4;
+		}
+		else if(3 == countRed)
+		{
+			return 5;
+		}
+		else//2,1,0
+		{
+			return 6;
 		}
 	}
 }
@@ -1101,7 +1135,7 @@ int printBuyRecord(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead,char *
 					buyHead -> data.buyNum[1],\
 					buyHead -> data.buyNum[2],\
 					buyHead -> data.buyNum[3],\
-					buyHead -> data.buyNum[4],\		
+					buyHead -> data.buyNum[4],\
 					buyHead -> data.buyNum[5],\
 					buyHead -> data.buyNum[6],\
 					pub.num[0],\

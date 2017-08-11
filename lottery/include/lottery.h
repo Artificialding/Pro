@@ -44,7 +44,7 @@ int getBuyerLinkLen(BuyerLink *buyHead);                    //获取彩民链表
 int drawLottery(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead);//彩票开奖
 int machineCreate(int *num);           //机器出球
 int notaryCreate(int *num);            //人工出球
-int awardBuyer(PubLink *pubHead,BuyLink *buyHead);//发放奖金
+int awardBuyer(PubLink *pubHead,BuyLink *buyHead,BuyerLink *buyerHead);//发放奖金
 int getLevel(int *pubNum,int *buyNum); //返回中奖等级
-int printAwardBuyerMessage(Buy *buy);
+int printAwardBuyerMessage(BuyLink *cursor,int level);
 #endif
