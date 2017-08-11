@@ -659,7 +659,7 @@ int insertAfterBuyLink(BuyLink *buyHead,Buy *buy)
 		return 0;
 	}
 	BuyLink *newNode = createBuyNode(buy);
-	while(NULL != buyHead)
+	while(NULL != buyHead -> next)
 	{
 		buyHead = buyHead -> next;
 	}
@@ -673,7 +673,7 @@ BuyLink *createBuyNode(Buy *buy)
 	newNode -> next = NULL;
 	return newNode;
 }
-BuyLink *getPreBuyNodePoint(BuyLink *buyHead,int issue,int id)
+BuyLink *getPreBuyNodePoint(BuyLink *buyHead,int issue)
 {
 	return NULL;
 }

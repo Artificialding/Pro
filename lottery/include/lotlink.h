@@ -57,9 +57,10 @@ typedef struct buy{
 	int flag;         //机选标志1 机选 2 手选
 	char strFlag[10]; //机选 手选
 	int buyCount;     //购买注数
-	Buyer buyerdata;  //购买者信息
 	int state;        //1:已兑奖0：未兑奖
+	char strState[10];//已兑奖 未兑奖
 	double money;     //单张彩票代表金额		
+	Buyer buyerData;  //购买者信息
 }Buy;
 
 typedef struct buyLink{
@@ -96,7 +97,7 @@ int saveBuyData(BuyLink *buyHead);
 int freeBuyLinkAllNode(BuyLink *buyHead);
 int insertAfterBuyLink(BuyLink *buyHead,Buy *buy);
 BuyLink *createBuyNode(Buy *buy);
-BuyLink *getPreBuyNodePoint(BuyLink *buyHead,int issue,int id);
+BuyLink *getPreBuyNodePoint(BuyLink *buyHead,int issue);
 BuyLink *getLastBuyNodePoint(BuyLink *buyHead);
 
 #endif

@@ -40,8 +40,11 @@ int sortBuyerMessage(BuyerLink *buyerHead);           //排序
 
 /**************Model层*公正员菜单*逻辑函数声明*********************/
 int authorization(PubLink *pubHead);           //授权发行
+int getBuyerLinkLen(BuyerLink *buyHead);                    //获取彩民链表长度
 int drawLottery(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead);//彩票开奖
-//int yaoHaoAlgorithm();                       //摇号算法
-
-
+int machineCreate(int *num);           //机器出球
+int notaryCreate(int *num);            //人工出球
+int awardBuyer(PubLink *pubHead,BuyLink *buyHead);//发放奖金
+int getLevel(int *pubNum,int *buyNum); //返回中奖等级
+int printAwardBuyerMessage(Buy *buy);
 #endif
