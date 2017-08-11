@@ -52,10 +52,12 @@ typedef struct publishLink{
 /***************购买信息链表********************/
 typedef struct buy{
 	int issue;        //购买期号
-	char id[10];      //单张彩票唯一标识
-	int buyNum[5];    //4白1红
+	int id;           //单张彩票唯一标识
+	int buyNum[7];    //6红1蓝
+	int flag;         //机选标志1 机选 2 手选
+	char strFlag[10]; //机选 手选
 	int buyCount;     //购买注数
-	Buyer data;       //购买者信息
+	Buyer buyerdata;  //购买者信息
 	int state;        //1:已兑奖0：未兑奖
 	double money;     //单张彩票代表金额		
 }Buy;

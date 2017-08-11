@@ -39,7 +39,7 @@ void adminMenu(void)
 	printf("2.发行记录\n");
 	printf("3.彩民信息\n");
 	printf("4.查找彩民\n");
-	printf("5.排序\n");
+	printf("5.彩民排序\n");
 	printf("0.推出登录\n");
 }
 
@@ -50,6 +50,6 @@ void notaryMenu(void)
 {
 	printf("1.发行授权\n");
 	printf("2.彩票开奖\n");
-	printf("3.查看历史发行记录\n");
+	printf("3.发行记录\n");
 	printf("0.退出登录\n");
 }

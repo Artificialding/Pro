@@ -125,32 +125,77 @@ int sortBuyerByName(BuyerLink *buyerHead)
 		printf(BUYER_HEAD_IS_NULL);
 		return 0;
 	}
+	printf("1.按升序排列\n");
+	printf("2.按降序排列\n");
+	int choose = 0;
+	scanf("%d",&choose);
+	if(getchar() != '\n')
+	{
+		while(getchar() != '\n');
+		printf("格式有误！\n");
+		return 0;
+	}
 	BuyerLink *i = buyerHead -> next;
 	BuyerLink *j = NULL;
 	BuyerLink *cursorMin = NULL;
-	while(NULL != i)//改进选择排序
+	BuyerLink *cursorMax = NULL;
+	if(1 == choose)
 	{
-		cursorMin = i;
-		j = i -> next;
-		while(NULL != j)
+		while(NULL != i)//改进选择排序
 		{
-			if(strcmp(i -> data.name,j -> data.name) <= 0)
+			cursorMin = i;
+			j = i -> next;
+			while(NULL != j)
 			{
-				cursorMin = i;
+				if(strcmp(i -> data.name,j -> data.name) <= 0)
+				{
+					cursorMin = i;
+				}
+				else
+				{
+					cursorMin = j;
+				}
+				j = j -> next;
 			}
-			else
-			{
-				cursorMin = j;
-			}
-			j = j -> next;
+			Buyer temp = i -> data;
+			i -> data = cursorMin -> data;
+			cursorMin -> data = temp;
+			i = i -> next;
 		}
-		Buyer temp = i -> data;
-		i -> data = cursorMin -> data;
-		cursorMin -> data = temp;
-		i = i -> next;
+		saveData(buyerHead);
+		return 1;
 	}
-	saveData(buyerHead);
-	return 1;
+	else if(2 == choose)
+	{
+		while(NULL != i)//改进选择排序
+		{
+			cursorMax = i;
+			j = i -> next;
+			while(NULL != j)
+			{
+				if(strcmp(i -> data.name,j -> data.name) == 1)
+				{
+					cursorMax = i;
+				}
+				else
+				{
+					cursorMax = j;
+				}
+				j = j -> next;
+			}
+			Buyer temp = i -> data;
+			i -> data = cursorMax -> data;
+			cursorMax -> data = temp;
+			i = i -> next;
+		}
+		saveData(buyerHead);
+		return 1;
+	}
+	else
+	{
+		printf("输入有误！\n");
+		return 0;
+	}
 }
 int sortBuyerById(BuyerLink *buyerHead)
 {
@@ -161,24 +206,62 @@ int sortBuyerById(BuyerLink *buyerHead)
 	}
 	BuyerLink *i = buyerHead -> next;
 	BuyerLink *j = NULL;
-	while(NULL != i -> next)//选择排序
+	printf("1.按升序排列\n");
+	printf("2.按降序排列\n");
+	int choose = 0;
+	scanf("%d",&choose);
+	if(getchar() != '\n')
 	{
-		j = i -> next;
-		while(NULL != j)
-		{
-			if(i -> data.id > j -> data.id)
-			{
-				Buyer temp = i -> data;
-				i -> data = j -> data;
-				j -> data = temp;
-			}
-			j = j -> next;
-		}
-		i = i -> next;
+		while(getchar() != '\n');
+		printf("格式有误！\n");
+		return 0;
 	}
-	return 1;
+	if(1 == choose)
+	{
+		while(NULL != i -> next)//选择排序
+		{
+			j = i -> next;
+			while(NULL != j)
+			{
+				if(i -> data.id > j -> data.id)
+				{
+					Buyer temp = i -> data;
+					i -> data = j -> data;
+					j -> data = temp;
+				}
+				j = j -> next;
+			}
+			i = i -> next;
+		}
+		saveData(buyerHead);
+		return 1;
+	}
+	else if(2 == choose)
+	{
+		while(NULL != i -> next)//选择排序
+		{
+			j = i -> next;
+			while(NULL != j)
+			{
+				if(i -> data.id < j -> data.id)
+				{
+					Buyer temp = i -> data;
+					i -> data = j -> data;
+					j -> data = temp;
+				}
+				j = j -> next;
+			}
+			i = i -> next;
+		}
+		saveData(buyerHead);
+		return 1;		
+	}
+	else
+	{
+		printf("输入有误！\n");
+		return 0;
+	}
 }
-
 int sortBuyerByBalance(BuyerLink *buyerHead)
 {
 	if(NULL == buyerHead)
@@ -189,23 +272,58 @@ int sortBuyerByBalance(BuyerLink *buyerHead)
 	int len = getBuyerLinkLen(buyerHead);
 	int i = 0,j = 0;
 	BuyerLink *cursor = buyerHead -> next;
-	for(i = 0;i < len -1;++i)//冒泡排序
+	printf("1.按升序排列\n");
+	printf("2.按降序排列\n");
+	int choose = 0;
+	scanf("%d",&choose);
+	if(getchar() != '\n')
 	{
-		for(j = 0;j < len - 1 - i;++i)
-		{
-			if(cursor -> data.balance > cursor -> next -> data.balance)
-			{
-				Buyer temp = cursor -> data;
-				cursor -> data = cursor -> next -> data;
-				cursor -> next -> data = temp;
-			}
-			cursor = cursor -> next;		
-		}	
-		cursor = buyerHead -> next;
+		printf("格式有误！\n");
+		return 0;
 	}
-	saveData(buyerHead);
-	return 1;
-	
+	if(1 == choose)
+	{
+		for(i = 0;i < len -1;++i)//冒泡排序升序
+		{
+			for(j = 0;j < len - 1 - i;++j)
+			{
+				if(cursor -> data.balance > cursor -> next -> data.balance)
+				{
+					Buyer temp = cursor -> data;
+					cursor -> data = cursor -> next -> data;
+					cursor -> next -> data = temp;
+				}
+				cursor = cursor -> next;		
+			}	
+			cursor = buyerHead -> next;
+		}
+		saveData(buyerHead);
+		return 1;	
+	}
+	else if(2 == choose)
+	{
+		for(i = 0;i < len - 1;++i)//冒泡排序降序
+		{
+			for(j = 0;j < len - 1 - i;++j)
+			{
+				if(cursor -> data.balance < cursor -> next -> data.balance)
+				{
+					Buyer temp = cursor -> data;
+					cursor -> data = cursor -> next -> data;
+					cursor -> next -> data = temp;
+				}
+				cursor = cursor -> next;		
+			}	
+			cursor = buyerHead -> next;
+		}
+		saveData(buyerHead);
+		return 1;
+	}
+	else
+	{
+		printf("输入有误！\n");
+		return 0;
+	}
 }
 
 
@@ -482,7 +600,7 @@ int loadBuyData(BuyLink *buyHead)
 	Buy buy = {0};
 	memset(&buy,0,sizeof(Buy));
 	while(0 != fread(&buy,sizeof(Buy),1,fprBuy))
-	{
+   	{
 		insertAfterBuyLink(buyHead,&buy);
 		memset(&buy,0,sizeof(Buy));
 	}
@@ -572,3 +690,4 @@ BuyLink *getLastBuyNodePoint(BuyLink *buyHead)
 	}
 	return buyHead;
 }
+

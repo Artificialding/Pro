@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "lotcontrol.h"
+#include <time.h>
 
 
 int identifyCardId(char *cardId)
@@ -50,9 +51,7 @@ int identifyCardId(char *cardId)
 			int year = atoi(strYear);
 			if(2017 - year < 18)//未满18周岁
 			{
-				printf("对不起！您未满18周岁\n，\
-						根据《中华人民共和国未成年人保护法》\
-						相关规定，禁止未成年人购买彩票！");
+				printf("对不起！您未满18周岁\n根据《中华人民共和国未成年人保护法》相关规定，禁止未成年人购买彩票！\n");
 				return 0;
 			}
 		}		
@@ -526,14 +525,40 @@ int printPubRecord(PubLink *pubHead)
 	}
 	return 1;
 }
-int sortBuyerMessage(BuyerLink *buyHead)
+int sortBuyerMessage(BuyerLink *buyerHead)
 {
 	if(NULL == buyerHead)
 	{
 		printf(BUYER_HEAD_IS_NULL);
 		return 0;
 	}
-
+	printf("1.按用户名排序\n");
+	printf("2.按id排序\n");
+	printf("3.按余额排序\n");
+	printf("选择:");
+	int choose = 0;
+	scanf("%d",&choose);
+	if(getchar() != '\n')
+	{
+		printf("格式有误！\n");
+		return 0;
+	}
+	switch(choose)
+	{
+		case 1://按用户名排序
+			sortBuyerByName(buyerHead);
+			break;
+		case 2://按id排序
+			sortBuyerById(buyerHead);
+			break;
+		case 3://按于余额排序
+			sortBuyerByBalance(buyerHead);
+			break;
+		default:
+			printf("输入有误！\n");
+			return 0;
+	}
+	printAllBuyerMessage(buyerHead);
 	return 1;
 }
 int authorization(PubLink *pubHead)
@@ -634,7 +659,7 @@ int drawLottery(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 	}
 }
 
-int buyLottery(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
+int buyLottery(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead,char *name)
 {
 	if(NULL == buyerHead)
 	{
@@ -664,12 +689,12 @@ int buyLottery(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 		}
 		if(1 == choose)
 		{
-			//machineSelect(buyerHead,pubHead,buyHead);
+			machineSelect(buyerHead,pubHead,buyHead,name);
 			return 1;
 		}
 		else if(2 == choose)
 		{
-			//buyerSelect(buyerHead,pubHead,buyHead);
+			buyerSelect(buyerHead,pubHead,buyHead,name);
 			return 1;
 		}
 		else
@@ -683,4 +708,155 @@ int buyLottery(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 		printf("新的一期彩票还没有发行，现在无法购买彩票！\n");
 		return 0;		
 	}
+}
+
+int machineSelect(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead,char *name)
+{
+	int num[7] = {0};
+	srand(time(NULL));
+	int i = 7;
+	for(i = 0;i < 6;++i)
+	{
+		num[i] = rand() % 33 + 1;
+	}
+	num[6] = rand() % 16 + 1;
+	printf("机选号码为:\033[31m%02d %02d %02d %02d %02d %02d\033[0m \033[34m%02d\033[0m\n",\
+			num[0],num[1],num[2],num[3],num[4],num[5],num[6]);
+	int buyCount = 0;
+	printf("请输入您要购买本张彩票的注数(单张彩票至多购买5注):");
+	scanf("%d",&buyCount);
+	if(getchar() != '\n')
+	{
+		while(getchar() != '\n');
+		printf("格式错误！购买失败！\n");
+		return 0;
+	}
+	if(buyCount > 5 || buyCount < 0)
+	{
+		printf("输入的注数有误！购买失败！\n");
+		return 0;
+	}
+	else if(0 == buyCount)
+	{
+		printf("取消购买成功，欢迎下次购买！\n");
+		return 1;
+	}
+	else
+	{
+		Buy buy;
+		memset(&buy,0,sizeof(Buy));
+		buy.issue = getLastPubNodePoint(pubHead) -> data.issue;
+		buy.id = getLastBuyNodePoint(buyHead) -> data.id + 1;
+		int i = 0;
+		for(i = 0;i < 7;++i)
+		{
+			buy.buyNum[i] = num[i];
+		}
+		buy.flag = 0;
+		strcpy(buy.strFlag,"机选");
+		buy.buyCount = buyCount;
+		buy.buyerdata = getPreNodePoint(buyerHead,name) -> next ->data;
+		buy.state = 0;
+		buy.money = 0.00;
+		insertAfterBuyLink(buyHead,&buy);
+		saveBuyData(buyHead);
+		return 1;
+	}
+}
+int buyerSelect(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead,char *name)
+{
+	int num[7] = {0};
+	int i = 0;
+	printf("红球6个号码为1 ~ 33，蓝球1个号码为1 ~ 16\n");
+	for(i = 0;i < 6;++i)
+	{
+		printf("请输入第%d个红球号码:",i + 1);
+		scanf("%d",&num[i]);
+		if(getchar() != '\n')
+		{
+			while(getchar() != '\n');
+			printf("格式错误！\n");
+			return 0;
+		}
+	}
+	printf("请输入蓝球号码:");
+	scanf("%d",&num[6]);
+	if(getchar() != '\n')
+	{
+		while(getchar() != '\n');
+		printf("格式错误！\n");
+		return 0;
+	}
+	printf("您选择的号码为:\033[31m%02d %02d %02d %02d %02d %02d\033[0m \033[34m%02d\033[0m\n",\
+			num[0],num[1],num[2],num[3],num[4],num[5],num[6]);
+	int buyCount = 0;
+	printf("请输入您要购买本张彩票的注数(单张彩票至多购买5注):");
+	scanf("%d",&buyCount);
+	if(getchar() != '\n')
+	{
+		while(getchar() != '\n');
+		printf("格式错误！购买失败！\n");
+		return 0;
+	}
+	if(buyCount > 5 || buyCount < 0)
+	{
+		printf("输入的注数有误！购买失败！\n");
+		return 0;
+	}
+	else if(0 == buyCount)
+	{
+		printf("取消购买成功，欢迎下次购买！\n");
+		return 1;
+	}
+	else
+	{
+		Buy buy;
+		memset(&buy,0,sizeof(Buy));
+		printf("yes1\n");
+		buy.issue = getLastPubNodePoint(pubHead) -> data.issue;
+		printf("yes2\n");
+		buy.id = getLastBuyNodePoint(buyHead) -> data.id + 1;
+		int i = 0;
+		for(i = 0;i < 7;++i)
+		{
+			buy.buyNum[i] = num[i];
+		}
+		buy.flag = 0;
+		strcpy(buy.strFlag,"手选");
+		buy.buyCount = buyCount;
+		buy.buyerdata = getPreNodePoint(buyerHead,name) -> next ->data;
+		buy.state = 0;
+		buy.money = 0.00;
+		insertAfterBuyLink(buyHead,&buy);
+		saveBuyData(buyHead);
+		return 1;
+	}
+}
+int printBuyRecord(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead,char *name)
+{
+	buyHead = buyHead -> next;
+	printf("购买期号 彩票编号 购买号码\t\t选号方式 购买注数 获奖金额 开奖状态 兑奖状态\n");	
+	while(NULL !=buyHead)
+	{
+		if(0 == strcmp(name,buyHead -> data.buyerdata.name))
+		{
+			printf("%08d %08d \033[31m%02d %02d %02d %02d %02d %02d\033[0m \033[34m%02d\033[0m %s %02d %.2lf %s %d\n",\
+					buyHead -> data.issue,\
+					buyHead -> data.id,\
+					buyHead -> data.buyNum[0],\
+					buyHead -> data.buyNum[1],\
+					buyHead -> data.buyNum[2],\
+					buyHead -> data.buyNum[3],\
+					buyHead -> data.buyNum[4],\		
+					buyHead -> data.buyNum[5],\
+					buyHead -> data.buyNum[6],\
+					buyHead -> data.strFlag,\
+					buyHead -> data.buyCount,\
+					buyHead -> data.money,\
+					getLastPubNodePoint(pubHead) -> data.strState,\
+					buyHead -> data.state);
+		}
+		buyHead = buyHead -> next;
+	}
+	return 1;
 }

@@ -91,9 +91,10 @@ void buyerMenuControl(BuyerLink *buyerHead,char *name,PubLink *pubHead,BuyLink *
 				printOneMessage(buyerHead,name);
 				break;
 			case 2://购买彩票
-				buyLottery(buyerHead,pubHead,buyHead);
+				buyLottery(buyerHead,pubHead,buyHead,name);
 				break;
 			case 3://历史记录
+				printBuyRecord(buyerHead,pubHead,buyHead,name);
 				break;
 			case 4://账户充值
 				rechargeAccount(buyerHead,name);
