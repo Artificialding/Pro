@@ -15,8 +15,28 @@
 #include <string.h>
 #include "lotcontrol.h"
 #include <time.h>
-
-
+int lotteryRole()
+{
+	printf("\t\t\t双色球玩法\n");
+	printf("\t\t\t开奖时间:每周二、四、日的21:30开奖\n");
+	printf("\t\t\t玩法规则:6个红球+1个蓝球=1注（2元）\n");
+	printf("\t\t\t*********************************************************\n");
+	printf("\t\t\t*\t 等级\t   中奖条件     说明\t  奖金\t\t*\n");
+	printf("\t\t\t*\t一等奖\tO O O O O O O \t6 + 1\t 10000 \t\t*\n");
+	printf("\t\t\t*\t二等奖\t O O O O O O  \t6\t 5000  \t\t*\n");
+	printf("\t\t\t*\t三等奖\t O O O O O O  \t5 + 1\t 3000  \t\t*\n");
+	printf("\t\t\t*\t四等奖\t  O O O O O   \t5\t 200   \t\t*\n");
+	printf("\t\t\t*\t四等奖\t  O O O O O   \t4 + 1\t 200   \t\t*\n");
+	printf("\t\t\t*\t五等奖\t   O O O O    \t4\t 10    \t\t*\n");
+	printf("\t\t\t*\t五等奖\t   O O O O    \t3 + 1\t 10    \t\t*\n");
+	printf("\t\t\t*\t六等奖\t    O O O     \t2 + 1\t 5     \t\t*\n");
+	printf("\t\t\t*\t六等奖\t     O O      \t1 + 1\t 5     \t\t*\n");
+	printf("\t\t\t*\t六等奖\t      O       \t1\t 5     \t\t*\n");
+	printf("\t\t\t*\t\t\t\t\t\t\t*\n");
+	printf("\t\t\t*********************************************************\n");
+	getchar();
+	return 1;
+}
 int identifyCardId(char *cardId)
 {
 	int len = 0;
@@ -183,6 +203,8 @@ int buyerRegist(BuyerLink *buyerHead)
 		printf("注册失败！\n");
 		return 0;
 	}
+	printf("同意遵循彩票管理系统的相关协议！\n");
+	getchar();
 	saveData(buyerHead);
 	printf("注册成功！\n");
 	return 1;
@@ -243,8 +265,17 @@ int loginSystem(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 			scanf("%s",passwd);
 			if(0 == strcmp(passwd,pre -> next ->data.passwd))
 			{
-				buyerMenuControl(buyerHead,name,pubHead,buyHead);//进入彩民菜单界面
-				return 1;
+				if(1 == checkVerificationCode())
+				{
+					buyerMenuControl(buyerHead,name,pubHead,buyHead);//进入彩民菜单界面
+					return 1;
+				}
+				else
+				{
+					printf("验证码输入错误！\n");
+
+					return 0;
+				}
 			}
 			else
 			{
@@ -254,7 +285,43 @@ int loginSystem(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 		}
 	}
 }
-
+int checkVerificationCode()
+{
+	srand(time(NULL));
+	char codeArray[] = "ABCDEFGHIGKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	char code[5] = "";
+	int i = 0,j = 0;
+	int num[4] = {0};
+	for(i = 0;i < 4;++i)
+	{
+		num[i] = rand() % 4;
+		for(j = 0;j < i;++j)
+		{
+			if(num[i] == num[j])
+			{
+				--i;
+				break;
+			}
+		}
+	}
+	code[num[0]] = codeArray[rand() % 26];
+	code[num[1]] = codeArray[rand() % 26 + 26];
+	code[num[2]] = codeArray[rand() % 10 + 52];
+	code[num[3]] = codeArray[rand() % 10 + 52];
+	code[4] = '\0';
+	printf("验证码:%s\n",code);
+	char codeUserInput[5] = "";
+	printf("请输入验证码:");
+	scanf("%s",codeUserInput);
+	if(0 == strcmp(codeUserInput,code))
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
 int printOneMessage(BuyerLink *buyerHead,char *name)
 {
 	if(NULL == buyerHead)
@@ -493,7 +560,7 @@ int publishLottery(PubLink *pubHead)
 			pub.sellCount = 0;
 			pub.totalMoney = last -> data.totalMoney;
 			insertAfterPubLink(pubHead,&pub);
-			printf("发行OK\n");
+			printf("第%d期双色球发行成功!\n",pub.issue);
 			return 1;
 		}
 	}
@@ -561,6 +628,235 @@ int sortBuyerMessage(BuyerLink *buyerHead)
 	printAllBuyerMessage(buyerHead);
 	return 1;
 }
+
+int selectBuyer(BuyerLink *buyerHead)
+{
+	if(NULL == buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return 0;
+	}
+	printf(">1.按账户名查寻\n");
+	printf(">2.按账户ID查寻\n");
+	printf(">3.按账户余额查寻\n");
+	printf("选择:");
+	int choose = 0;
+	scanf("%d",&choose);
+	if(getchar() != '\n')
+	{
+		while(getchar() != '\n');
+		printf("格式错误！\n");
+		return 0;
+	}
+	switch(choose)
+	{
+		case 1:
+			printBuyerMessageByName(buyerHead);
+			break;
+		case 2:
+			printBuyerMessageById(buyerHead);
+			break;
+		case 3:
+			printBuyerMessageByBalance(buyerHead);
+			break;
+		default:
+			printf("输入选择有误！\n");
+			return 0;
+	}
+	return 1;
+}
+int printBuyerMessageByName(BuyerLink *buyHead)
+{
+	if(NULL == buyHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return 0;
+	}
+	printf("请输入账户名:");
+	char buyerName[20] = "";
+	scanf("%s",buyerName);
+	BuyerLink *cursor = buyHead ->next;
+	Buyer buyer;
+	memset(&buyer,0,sizeof(Buyer));
+	printf("\033[7m账户ID    唯一帐户名       个人注册身份证号码        注册手机号码      账户余额\033[0m\n");
+	while(NULL != cursor)
+	{
+		buyer = cursor -> data;
+		if(0 == strcmp(buyerName,buyer.name))
+		{
+			printf("%07d%12s%26s%19s%14.2lf\n",\
+				buyer.id,\
+				buyer.name,\
+				buyer.cardId,\
+				buyer.telNum,\
+				buyer.balance);
+			break;
+		}
+		memset(&buyer,0,sizeof(Buyer));
+		cursor = cursor -> next;
+	}
+	return 1;
+}
+int printBuyerMessageById(BuyerLink *buyerHead)
+{
+	if(NULL == buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return 0;
+	}
+	printf(">1.按ID查询\n");
+	printf(">2.按ID区间查询\n");
+	printf("选择:");
+	int choose = 0;
+	scanf("%d",&choose);
+	if(getchar() != '\n')
+	{
+		while(getchar() != '\n');
+		printf("格式有误！\n");
+		return 0;
+	}
+	if(1 == choose)
+	{
+		printf("请输入账户Id:");
+		int buyerId = 0;
+		scanf("%d",&buyerId);
+		if(getchar() != '\n')
+		{
+			while(getchar() != '\n');
+			printf("格式有误！\n");
+			return 0;
+		}
+		BuyerLink *cursor = buyerHead -> next;
+		Buyer buyer;
+		memset(&buyer,0,sizeof(Buyer));
+		printf("\033[7m账户ID    唯一帐户名       个人注册身份证号码        注册手机号码      账户余额\033[0m\n");
+		while(NULL != cursor)
+		{
+			buyer = cursor -> data;
+			if(buyerId == buyer.id)
+			{
+				printf("%07d%12s%26s%19s%14.2lf\n",\
+				buyer.id,\
+				buyer.name,\
+				buyer.cardId,\
+				buyer.telNum,\
+				buyer.balance);
+				break;
+			}
+			memset(&buyer,0,sizeof(Buyer));
+			cursor = cursor -> next;
+		}
+		return 1;
+	}
+	else if(2 == choose)
+	{
+		int beginId = 0;
+		int endId = 0;
+		printf("请输入起始ID:");
+		scanf("%d",&beginId);
+		printf("请输入终止ID:");
+		scanf("%d",&endId);
+		BuyerLink *cursor = buyerHead -> next;
+		Buyer buyer;
+		memset(&buyer,0,sizeof(Buyer));
+		printf("\033[7m账户ID    唯一帐户名       个人注册身份证号码        注册手机号码      账户余额\033[0m\n");
+		while(NULL != cursor)
+		{
+			buyer = cursor -> data;
+			if(buyer.id >= beginId && buyer.id <= endId)
+			{
+				printf("%07d%12s%26s%19s%14.2lf\n",\
+				buyer.id,\
+				buyer.name,\
+				buyer.cardId,\
+				buyer.telNum,\
+				buyer.balance);				
+			}
+			memset(&buyer,0,sizeof(Buyer));
+			cursor = cursor -> next;
+		}
+		return 1;
+	}
+	else
+	{
+		printf("选择有误!\n");
+		return 0;
+	}
+}
+int printBuyerMessageByBalance(BuyerLink *buyerHead)
+{
+	if(NULL == buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return 0;
+	}
+	printf(">1.按余额查询\n");
+	printf(">2.按余额区间查询\n");
+	printf("选择:");
+	int choose = 0;
+	scanf("%d",&choose);
+	if(1 == choose)
+	{
+		printf("请输入余额数值：");
+		double buyerBalance = 0.00;
+		scanf("%lf",&buyerBalance);
+		BuyerLink *cursor = buyerHead -> next;
+		Buyer buyer;
+		memset(&buyer,0,sizeof(Buyer));
+		printf("\033[7m账户ID    唯一帐户名       个人注册身份证号码        注册手机号码      账户余额\033[0m\n");
+		while(NULL != cursor)
+		{
+			buyer = cursor -> data;
+			if(buyerBalance == buyer.balance)
+			{
+				printf("%07d%12s%26s%19s%14.2lf\n",\
+				buyer.id,\
+				buyer.name,\
+				buyer.cardId,\
+				buyer.telNum,\
+				buyer.balance);				
+			}
+			memset(&buyer,0,sizeof(Buyer));
+			cursor = cursor -> next;
+		}
+		return 1;
+	}
+	else if(2 == choose)
+	{
+		double balanceMin = 0.00;
+		double balanceMax = 0.00;
+		printf("请输入余额最小值:");
+		scanf("%lf",&balanceMin);
+		printf("请输入余额最大值:");
+		scanf("%lf",&balanceMax);
+		BuyerLink *cursor = buyerHead -> next;
+		Buyer buyer;
+		memset(&buyer,0,sizeof(Buyer));
+		printf("\033[7m账户ID    唯一帐户名       个人注册身份证号码        注册手机号码      账户余额\033[0m\n");
+		while(NULL != cursor)
+		{
+			buyer = cursor -> data;
+			if(buyer.balance >= balanceMin && buyer.balance <= balanceMax)
+			{	
+				printf("%07d%12s%26s%19s%14.2lf\n",\
+				buyer.id,\
+				buyer.name,\
+				buyer.cardId,\
+				buyer.telNum,\
+				buyer.balance);
+			}
+			memset(&buyer,0,sizeof(Buyer));
+			cursor = cursor -> next;
+		}
+		return 1;
+	}
+	else
+	{
+		printf("选择有误！\n");
+		return 0;
+	}
+}
+
 int authorization(PubLink *pubHead)
 {
 	if(NULL == pubHead)
@@ -588,7 +884,6 @@ int authorization(PubLink *pubHead)
 		return 0;
 	}
 }
-
 
 int drawLottery(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 {
@@ -668,7 +963,7 @@ int drawLottery(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 		last -> data.num[5] = num[5];
 		last -> data.num[6] = num[6];
 		last -> data.state = 1;
-		strcpy(last -> data.strState,"开奖");
+		strcpy(last -> data.strState,"已开奖");
 		savePubData(pubHead);
 		printf("开奖成功！\n");
 		printf("第%d期双色球开奖号码是:\033[31m%02d %02d %02d %02d %02d %02d\033[0m \033[34m%02d\033[0m\n",\
@@ -1030,12 +1325,12 @@ int machineSelect(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead,char *n
 		strcpy(buy.strFlag,"机选");
 		buy.buyCount = buyCount;
 		buy.buyerData = getPreNodePoint(buyerHead,name) -> next ->data;
-		printf("yes0\n");
 		buy.state = 0;
 		strcpy(buy.strState,"未兑奖");
 		buy.money = 0.00;
 		insertAfterBuyLink(buyHead,&buy);
 		saveBuyData(buyHead);
+		printf("机选成功！\n");
 		return 1;
 	}
 }
@@ -1101,6 +1396,7 @@ int buyerSelect(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead,char *nam
 	{
 		Buy buy;
 		memset(&buy,0,sizeof(Buy));
+		Buyer *buyer = &(getPreNodePoint(buyerHead,name) -> next -> data);
 		buy.issue = getLastPubNodePoint(pubHead) -> data.issue;
 		buy.id = getLastBuyNodePoint(buyHead) -> data.id + 1;
 		int i = 0;
@@ -1111,8 +1407,9 @@ int buyerSelect(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead,char *nam
 		buy.flag = 0;
 		strcpy(buy.strFlag,"手选");
 		buy.buyCount = buyCount;
+		buyer -> balance -= buy.buyCount * 2;
 		buy.buyerData = getPreNodePoint(buyerHead,name) -> next ->data;
-		buy.state = 0;
+		buy.state = 0; 
 		strcpy(buy.strState,"未兑奖");
 		buy.money = 0.00;
 		insertAfterBuyLink(buyHead,&buy);

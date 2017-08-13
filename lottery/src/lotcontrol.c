@@ -55,6 +55,9 @@ void mainMenuControl(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 			case 2://用户注册
 				buyerRegist(buyerHead);
 				break;
+			case 3://开奖规则
+				lotteryRole();
+				break;
 			case 0://退出系统
 				saveData(buyerHead);
 				savePubData(pubHead);
@@ -101,16 +104,19 @@ void buyerMenuControl(BuyerLink *buyerHead,char *name,PubLink *pubHead,BuyLink *
 			case 2://购买彩票
 				buyLottery(buyerHead,pubHead,buyHead,name);
 				break;
-			case 3://历史记录
+			case 3://彩民评论
+				//buyerComment(buyerHead,commentHead);
+				break;
+			case 4://历史记录
 				printBuyRecord(buyerHead,pubHead,buyHead,name);
 				break;
-			case 4://账户充值
+			case 5://账户充值
 				rechargeAccount(buyerHead,name);
 				break;
-			case 5://修改密码
+			case 6://修改密码
 				changePasswd(buyerHead,name);
 				return;
-			case 6://注销账户
+			case 7://注销账户
 				if(1 == logOffAccount(buyerHead,name))
 				{
 					return;
@@ -152,15 +158,19 @@ int adminMenuControl(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 			case 1://发行彩票
 				publishLottery(pubHead);
 				break;
-			case 2://发行记录
+			case 2:
+				//prizePoolAmount(pubHead);
+				break;
+			case 3://发行记录
 				printPubRecord(pubHead);
 				break;
-			case 3://所有彩民信息
+			case 4://所有彩民信息
 				printAllBuyerMessage(buyerHead);
 				break;
-			case 4://查找彩民
+			case 5://查找彩民
+				selectBuyer(buyerHead);
 				break;
-			case 5://排序
+			case 6://排序
 				sortBuyerMessage(buyerHead);
 				break;
 			case 0://退出登录
