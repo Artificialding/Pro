@@ -792,7 +792,7 @@ int awardBuyer(PubLink *pubHead,BuyLink *buyHead,BuyerLink *buyerHead)
 		BuyerLink *buyerNode = getPreNodePoint(buyerHead,cursor -> data.buyerData.name) -> next;
 		level = getLevel(num,cursor -> data.buyNum);
 		printf("中奖信息公布:\n");
-		printf("发行期号\t彩票ID\t账户名\t中奖等级\t购买号码\t\t购买注数\t中奖金额\t\n");
+		printf("发行期号   彩票序列号    账户名   中奖等级    购买号码\t\t    购买注数    中奖金额\n");
 		switch(level)
 		{
 			case 1://一等奖
@@ -833,6 +833,7 @@ int awardBuyer(PubLink *pubHead,BuyLink *buyHead,BuyerLink *buyerHead)
 				saveData(buyerHead);
 				return 0;
 		}
+		cursor = cursor -> next;
 	}
 	saveBuyData(buyHead);
 	saveData(buyerHead);
@@ -840,7 +841,7 @@ int awardBuyer(PubLink *pubHead,BuyLink *buyHead,BuyerLink *buyerHead)
 }
 int printAwardBuyerMessage(BuyLink *cursor,int level)
 {
-	printf("%08d\t%08d\t%s\t\t%d\033[31m%02d %02d %02d %02d %02d %02d\033[0m \033[34m%02d\033[0m\t%d\t%.2lf",\
+	printf("%08d   %08d  %10s   %d           \033[31m%02d %02d %02d %02d %02d %02d\033[0m \033[34m%02d\033[0m  %d           %.2lf\n",\
 	cursor -> data.issue,\
 	cursor -> data.id,\
 	cursor -> data.buyerData.name,\
@@ -911,7 +912,7 @@ int getLevel(int *pubNum,int *buyNum)
 		{
 			return 5;
 		}
-		else//2,1,0
+		else
 		{
 			return 6;
 		}
