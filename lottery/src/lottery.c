@@ -15,6 +15,9 @@
 #include <string.h>
 #include "lotcontrol.h"
 #include <time.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <termios.h>
 int lotteryRole()
 {
 	printf("\t\t\t双色球玩法\n");
@@ -220,7 +223,8 @@ int loginSystem(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 	if(0 == strcmp("admin",name))
 	{
 		printf("请输入密码:");
-		scanf("%s",passwd);
+		getchar();
+		getPassword(passwd);
 		if(0 == strcmp("admin",passwd))
 		{
 			adminMenuControl(buyerHead,pubHead,buyHead);	//进入管理员菜单界面
@@ -235,7 +239,8 @@ int loginSystem(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 	else if(0 == strcmp("notary",name))
 	{
 		printf("请输入密码:");
-		scanf("%s",passwd);
+		getchar();
+		getPassword(passwd);
 		if(0 == strcmp("notary",passwd))
 		{
 			notaryMenuControl(buyerHead,pubHead,buyHead);	//进入公正员界面
@@ -263,7 +268,8 @@ int loginSystem(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 				return 0;
 			}
 			printf("请输入密码:");
-			scanf("%s",passwd);
+			getchar();
+			getPassword(passwd);
 			if(0 == strcmp(passwd,pre -> next ->data.passwd))
 			{
 				if(1 == checkVerificationCode())
@@ -1633,4 +1639,67 @@ int printBuyRecord(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead,char *
 	}
 	getchar();
 	return 1;
+}
+int getch()
+{
+        struct termios tm, tm_old;
+        int fd = STDIN_FILENO, c;
+        if(tcgetattr(fd, &tm) < 0)	//获取终端属性
+        {
+            return -1;
+        }
+        tm_old = tm;
+        cfmakeraw(&tm);	//就是将终端设置为原始模式，该模式下所有的输入数据以字节为单位被处理。
+        				//在原始模式下，终端是不可回显的，而且所有特定的终端输入/输出模式不可用。
+        if(tcsetattr(fd, TCSANOW, &tm) < 0)	//不等数据传输完毕就立即改变属性   成功返回0   失败-1
+        {
+            return -1;
+        }
+        c = fgetc(stdin);//
+        if(tcsetattr(fd, TCSANOW, &tm_old) < 0)
+        {
+            return -1;
+        }
+        return c;
+}
+
+void getPassword(char *pcPWD)
+{
+	int ch=0;
+	int i=0;
+	for(i=0;i<10;)
+	{
+		ch=getch();
+		if(ch==-1)
+		{
+			continue;
+		}
+		if((ch == 127 || ch == 8) && i>0)
+		{
+			putchar('\b');
+			putchar(' ');
+			putchar('\b');
+			i--;
+		}
+		else if(ch==10 || ch == 13)
+		{
+			pcPWD[i]=0;
+			putchar('\n');
+			return;
+		}
+		else if(i==0&&(ch==127 ||ch == 8))
+		{
+			printf("\a");
+		}
+		else if(i<9)
+		{
+			pcPWD[i]=(char)ch;
+			putchar('*');
+			i++;
+		}
+		else
+		{
+			printf("\a");
+		}
+	}
 }

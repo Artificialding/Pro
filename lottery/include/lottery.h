@@ -20,6 +20,8 @@ int initPasswd(char *newPasswd,int chance);    //初始化密码
 int getCurrentMaxId(BuyerLink *buyerHead);     //获取当前最大id值
 int buyerRegist(BuyerLink *buyerHead);         //彩民注册
 int loginSystem(BuyerLink *buyerHeadi,PubLink *pubHead,BuyLink *buyHead);  //登录
+int getch(void);
+void getPassword(char *pcPWD);
 int checkVerificationCode();
 
 /**************Model层*彩民菜单*逻辑函数声明*********************/
