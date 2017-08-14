@@ -43,6 +43,7 @@ int loadData(BuyerLink *buyerHead)
 	}
 	fclose(fprBuyer);
 	fprBuyer = NULL;
+	printf("BuyerLink加载完毕...\n");
 	return 1;
 	/***************************************/
 
@@ -76,6 +77,7 @@ int saveData(BuyerLink *buyerHead)
 	}
 	fclose(fpsBuyer);
 	fpsBuyer = NULL;
+	printf("BuyerLink保存完毕...\n");
 	return 1;
 
 }
@@ -100,7 +102,7 @@ int freeBuyerLinkAllNode(BuyerLink *buyerHead)
 		free(buyerHead);
 		buyerHead = pre;
 	}
-	printf("BuyerLink释放完毕\n");
+	printf("BuyerLink释放完毕...\n");
 	return 1;
 }
 int getBuyerLinkLen(BuyerLink *buyerHead)
@@ -214,6 +216,10 @@ int sortBuyerById(BuyerLink *buyerHead)
 	{
 		while(getchar() != '\n');
 		printf("格式有误！\n");
+		return 0;
+	}
+	if(NULL == i)
+	{
 		return 0;
 	}
 	if(1 == choose)
@@ -420,6 +426,7 @@ int loadPubData(PubLink *pubHead)
 	}
 	fclose(fprPub);
 	fprPub = NULL;
+	printf("PubLink加载完毕...\n");
 	return 1;
 }
 int savePubData(PubLink *pubHead)
@@ -442,6 +449,7 @@ int savePubData(PubLink *pubHead)
 	}
 	fclose(fpsPub);
 	fpsPub = NULL;
+	printf("PubLink保存完毕...\n");
 	return 1;
 }
 int freePubLinkAllNode(PubLink *pubHead)
@@ -458,7 +466,7 @@ int freePubLinkAllNode(PubLink *pubHead)
 		free(pubHead);
 		pubHead = pre;
 	}
-	printf("PubLink释放完毕！\n");
+	printf("PubLink释放完毕...\n");
 	return 1;
 }
 
@@ -543,6 +551,7 @@ int loadBuyData(BuyLink *buyHead)
 	}
 	fclose(fprBuy);
 	fprBuy = NULL;
+	printf("BuyLink加载完毕...\n");
 	return 1;
 }
 
@@ -567,6 +576,7 @@ int saveBuyData(BuyLink *buyHead)
 	}
 	fclose(fpsBuy);
 	fpsBuy = NULL;
+	printf("BuyLink保存完毕...\n");
 	return 1;
 }
 
@@ -584,7 +594,7 @@ int freeBuyLinkAllNode(BuyLink *buyHead)
 		free(buyHead);
 		buyHead = pre;
 	}
-	printf("BuyLink释放完毕\n");
+	printf("BuyLink释放完毕...\n");
 	return 1;
 }
 

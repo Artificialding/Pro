@@ -22,16 +22,16 @@ int lotteryRole()
 	printf("\t\t\t玩法规则:6个红球+1个蓝球=1注（2元）\n");
 	printf("\t\t\t*********************************************************\n");
 	printf("\t\t\t*\t 等级\t   中奖条件     说明\t  奖金\t\t*\n");
-	printf("\t\t\t*\t一等奖\tO O O O O O O \t6 + 1\t 10000 \t\t*\n");
-	printf("\t\t\t*\t二等奖\t O O O O O O  \t6\t 5000  \t\t*\n");
-	printf("\t\t\t*\t三等奖\t O O O O O O  \t5 + 1\t 3000  \t\t*\n");
-	printf("\t\t\t*\t四等奖\t  O O O O O   \t5\t 200   \t\t*\n");
-	printf("\t\t\t*\t四等奖\t  O O O O O   \t4 + 1\t 200   \t\t*\n");
-	printf("\t\t\t*\t五等奖\t   O O O O    \t4\t 10    \t\t*\n");
-	printf("\t\t\t*\t五等奖\t   O O O O    \t3 + 1\t 10    \t\t*\n");
-	printf("\t\t\t*\t六等奖\t    O O O     \t2 + 1\t 5     \t\t*\n");
-	printf("\t\t\t*\t六等奖\t     O O      \t1 + 1\t 5     \t\t*\n");
-	printf("\t\t\t*\t六等奖\t      O       \t1\t 5     \t\t*\n");
+	printf("\t\t\t*\t一等奖\t \033[31mO O O O O O\033[0m \033[34mO\033[0m \t6 + 1\t 10%%奖池 \t*\n");
+	printf("\t\t\t*\t二等奖\t  \033[31mO O O O O O\033[0m  \t6\t 5%%奖池  \t*\n");
+	printf("\t\t\t*\t三等奖\t  \033[31mO O O O O\033[0m \033[34mO\033[0m  \t5 + 1\t 3000  \t\t*\n");
+	printf("\t\t\t*\t四等奖\t   \033[31mO O O O O\033[0m   \t5\t 200   \t\t*\n");
+	printf("\t\t\t*\t四等奖\t   \033[31mO O O O\033[0m \033[34mO\033[0m   \t4 + 1\t 200   \t\t*\n");
+	printf("\t\t\t*\t五等奖\t    \033[31mO O O O\033[0m    \t4\t 10    \t\t*\n");
+	printf("\t\t\t*\t五等奖\t    \033[31mO O O\033[0m \033[34mO\033[0m    \t3 + 1\t 10    \t\t*\n");
+	printf("\t\t\t*\t六等奖\t     \033[31mO O\033[0m \033[34mO\033[0m     \t2 + 1\t 5     \t\t*\n");
+	printf("\t\t\t*\t六等奖\t      \033[31mO\033[0m \033[34mO\033[0m      \t1 + 1\t 5     \t\t*\n");
+	printf("\t\t\t*\t六等奖\t       \033[31mO\033[0m       \t1\t 5     \t\t*\n");
 	printf("\t\t\t*\t\t\t\t\t\t\t*\n");
 	printf("\t\t\t*********************************************************\n");
 	getchar();
@@ -205,6 +205,7 @@ int buyerRegist(BuyerLink *buyerHead)
 	}
 	printf("同意遵循彩票管理系统的相关协议！\n");
 	getchar();
+	getchar();
 	saveData(buyerHead);
 	printf("注册成功！\n");
 	return 1;
@@ -342,6 +343,7 @@ int printOneMessage(BuyerLink *buyerHead,char *name)
 				buyer.cardId,\
 				buyer.telNum,\
 				buyer.balance);
+		getchar();
 		return 1;
 	}
 	else
@@ -371,6 +373,8 @@ int rechargeAccount(BuyerLink *buyerHead,char *name)
 		}
 		pre = pre -> next;
 		pre -> data.balance += charge;
+		printf("充值%.2lf元成功！\n",charge);
+		getchar();
 		return 1;
 	}
 	else
@@ -394,7 +398,7 @@ int changePasswd(BuyerLink *buyerHead,char *name)
 		char confirmPasswd[10] = "";
 		int chance = 3;
 		pre = pre -> next;
-		if(1 == identifyPasswd(pre -> data.passwd,chance))
+		if(1 == identifyPasswd(pre -> data.passwd,chance,name))
 		{
 			printf("请输入新密码:");
 			scanf("%s",newPasswd);
@@ -433,10 +437,10 @@ int changePasswd(BuyerLink *buyerHead,char *name)
 	}
 }
 
-int identifyPasswd(char *passwd,int chance)
+int identifyPasswd(char *passwd,int chance,char *name)
 {
 	char inputPasswd[10] = "";
-	printf("请输入原密码:");
+	printf("请输入%s密码:",name);
 	scanf("%s",inputPasswd);
 	if(0 == strcmp(passwd,inputPasswd))
 	{
@@ -449,7 +453,7 @@ int identifyPasswd(char *passwd,int chance)
 			return 0;
 		}
 		printf("错误！还有%d次机会。\n",--chance);
-		return identifyPasswd(passwd,chance);
+		return identifyPasswd(passwd,chance,name);
 	}
 }
 int logOffAccount(BuyerLink *buyerHead,char *name)
@@ -465,25 +469,34 @@ int logOffAccount(BuyerLink *buyerHead,char *name)
 		printf("用户不存在！\n");
 		return 0;
 	}
-	printf("您确定要注销账户吗？注销后可联系管理员找回帐号。\n");
-	printf("「确认」回车     「取消」ESC：");
-	char ch = getchar();
-	while(getchar() != '\n');
-	if(ch == '\n')
+	if(1 == identifyPasswd(pre -> next -> data.passwd,3,name))
 	{
-		pre -> next -> data.flag = 1;
-		strcpy(pre -> next -> data.state,"冻结");
-		printf("注销成功！\n");
-		return 1;
-	}
-	else if(ch == 27)
-	{
-		printf("取消注销成功！\n");
-		return 0;
+		printf("您确定要注销账户吗？注销后可联系管理员找回帐号。\n");
+		printf("「确认」回车     「取消」ESC：");
+		char ch = getchar();
+	
+		if(ch == '\n')
+		{
+			pre -> next -> data.flag = 1;
+			strcpy(pre -> next -> data.state,"冻结");
+			printf("注销成功！\n");
+			return 1;
+		}
+		else if(ch == 27)
+		{
+			printf("取消注销成功！\n");
+			return 0;
+		}
+		else
+		{
+			printf("error注销失败！\n");
+			return 0;
+		}
 	}
 	else
 	{
-		printf("error注销失败！\n");
+		printf("验证%s密码不正确，不允许注销!\n",name);
+		getchar();
 		return 0;
 	}
 }
@@ -522,8 +535,53 @@ int printAllBuyerMessage(BuyerLink *buyerHead)
 		}
 		buyerHead = buyerHead -> next;
 	}
+	getchar();
 	return 1;
 }
+int prizePoolAmount(PubLink *pubHead)
+{
+	if(NULL == pubHead)
+	{
+		printf(PUB_HEAD_IS_NULL);
+		return 0;
+	}
+	PubLink *lastPubNodePoint = getLastPubNodePoint(pubHead);
+	printf(">1.查看奖池金额\n");
+	printf(">2.设置奖池金额\n");
+	printf("选择:");
+	int choose = 0;
+	scanf("%d",&choose);
+	if(1 == choose)
+	{
+		printf("目前奖池金额为:%.2lf\n",lastPubNodePoint -> data.totalMoney);
+		getchar();
+		getchar();
+		return 1;
+	}
+	else if(2 == choose)
+	{
+		printf("请输入奖池金额:");
+		double poolMoney = 0.00;
+		scanf("%lf",&poolMoney);
+		if(getchar() != '\n')
+		{
+			while(getchar() != '\n');
+			printf("格式有误！\n");
+			return 0;
+		}
+		lastPubNodePoint -> data.totalMoney = poolMoney;
+		savePubData(pubHead);
+		printf("奖池目前的金额是:%.2lf",lastPubNodePoint -> data.totalMoney);
+		getchar();
+		return 1;
+	}
+	else
+	{
+		printf("error\n");
+		return 0;
+	}
+}
+
 int publishLottery(PubLink *pubHead)
 {
 	if(NULL == pubHead)
@@ -561,6 +619,7 @@ int publishLottery(PubLink *pubHead)
 			pub.totalMoney = last -> data.totalMoney;
 			insertAfterPubLink(pubHead,&pub);
 			printf("第%d期双色球发行成功!\n",pub.issue);
+			getchar();
 			return 1;
 		}
 	}
@@ -590,6 +649,7 @@ int printPubRecord(PubLink *pubHead)
 		pubHead = pubHead -> next;
 		memset(&pub,0,sizeof(Pub));
 	}
+	getchar();
 	return 1;
 }
 int sortBuyerMessage(BuyerLink *buyerHead)
@@ -613,13 +673,22 @@ int sortBuyerMessage(BuyerLink *buyerHead)
 	switch(choose)
 	{
 		case 1://按用户名排序
-			sortBuyerByName(buyerHead);
+			if(0 == sortBuyerByName(buyerHead))
+			{
+				return 0;
+			}
 			break;
 		case 2://按id排序
-			sortBuyerById(buyerHead);
+			if(0 == sortBuyerById(buyerHead))
+			{
+				return 0;
+			}
 			break;
 		case 3://按于余额排序
-			sortBuyerByBalance(buyerHead);
+			if(0 == sortBuyerByBalance(buyerHead))
+			{
+				return 0;
+			}
 			break;
 		default:
 			printf("输入有误！\n");
@@ -651,13 +720,22 @@ int selectBuyer(BuyerLink *buyerHead)
 	switch(choose)
 	{
 		case 1:
-			printBuyerMessageByName(buyerHead);
+			if(0 == printBuyerMessageByName(buyerHead))
+			{
+				return 0;
+			}
 			break;
 		case 2:
-			printBuyerMessageById(buyerHead);
+			if(0 == printBuyerMessageById(buyerHead))
+			{
+				return 0;
+			}
 			break;
 		case 3:
-			printBuyerMessageByBalance(buyerHead);
+			if(0 == printBuyerMessageByBalance(buyerHead))
+			{
+				return 0;
+			}
 			break;
 		default:
 			printf("输入选择有误！\n");
@@ -695,6 +773,8 @@ int printBuyerMessageByName(BuyerLink *buyHead)
 		memset(&buyer,0,sizeof(Buyer));
 		cursor = cursor -> next;
 	}
+	getchar();
+	getchar();
 	return 1;
 }
 int printBuyerMessageById(BuyerLink *buyerHead)
@@ -746,6 +826,7 @@ int printBuyerMessageById(BuyerLink *buyerHead)
 			memset(&buyer,0,sizeof(Buyer));
 			cursor = cursor -> next;
 		}
+		getchar();
 		return 1;
 	}
 	else if(2 == choose)
@@ -775,6 +856,7 @@ int printBuyerMessageById(BuyerLink *buyerHead)
 			memset(&buyer,0,sizeof(Buyer));
 			cursor = cursor -> next;
 		}
+		getchar();
 		return 1;
 	}
 	else
@@ -819,6 +901,8 @@ int printBuyerMessageByBalance(BuyerLink *buyerHead)
 			memset(&buyer,0,sizeof(Buyer));
 			cursor = cursor -> next;
 		}
+		getchar();
+		getchar();
 		return 1;
 	}
 	else if(2 == choose)
@@ -848,6 +932,8 @@ int printBuyerMessageByBalance(BuyerLink *buyerHead)
 			memset(&buyer,0,sizeof(Buyer));
 			cursor = cursor -> next;
 		}
+		getchar();
+		getchar();
 		return 1;
 	}
 	else
@@ -864,13 +950,38 @@ int authorization(PubLink *pubHead)
 		printf(PUB_HEAD_IS_NULL);
 		return 0;
 	}
+	if(1 == pubHead -> data.state)
+	{
+		printf("彩票已经授权发行，您要撤回权限吗?\n");
+		printf("【确定】回车  【取消】ESC :");
+		char ch = 0;
+		scanf("%c",&ch);
+		if(ch == '\n')
+		{
+			pubHead -> data.state = 0;
+			savePubData(pubHead);
+			printf("撤销授权成功！\n");
+			return 1;
+		}
+		else if(ch == 27)
+		{
+			printf("取消撤销权限成功!\n");
+			return 1;
+		}
+		else
+		{
+			printf("error！\n");
+			return 0;
+		}
+	}
 	printf("是否授权发行彩票？\n");
-	printf("「授权」Y/y    「不授权」N/n:");
+	printf("【授权】Y/y    【不授权】N/n:");
 	char ch = getchar();
 	if(ch == 'Y' || ch == 'y')
 	{
 		pubHead -> data.state = 1;
 		savePubData(pubHead);
+		printf("授权成功,管理员可以发行彩票！\n");
 		return 1;
 	}
 	else if(ch == 'N' || ch == 'n')
@@ -902,7 +1013,24 @@ int drawLottery(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 		printf(BUY_HEAD_IS_NULL);
 		return 0;
 	}
-	printf("「机器摇号」请按1  「人工定号」请按2：\n");
+	if(pubHead -> data.state == 0)
+	{
+		printf("彩票没有获得发行权限，无法开奖，请公正员先授权！\n");
+		getchar();
+		return 0;
+	}
+	PubLink *lastPubNode = getLastPubNodePoint(pubHead);
+	if(lastPubNode -> data.issue == 0)
+	{
+		printf("管理员还没有发行彩票，无法开奖！\n");
+		return 0;
+	}
+	if(lastPubNode -> data.state == 1)
+	{
+		printf("本期彩票已经开奖，无需重复开奖!\n");
+		return 0;
+	}
+	printf("【机器摇号】请按1  【人工定号】请按2：\n");
 	int choose = 0;
 	scanf("%d",&choose);
 	if(getchar() != '\n')
@@ -943,6 +1071,11 @@ int drawLottery(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 			num[6]
 			);
 		}
+		else
+		{
+			printf("手动摇号有误!\n");
+			return 0;
+		}
 	}
 	else
 	{
@@ -950,7 +1083,7 @@ int drawLottery(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 		return 0;
 	}
 	printf("公正员确定开奖？\n");
-	printf("「确定」回车  「取消」ESC:");
+	printf("【确定】回车  【取消】ESC:");
 	char ch = getchar();
 	if(ch == '\n')
 	{
@@ -978,6 +1111,7 @@ int drawLottery(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 		);
 		savePubData(pubHead);
 		awardBuyer(pubHead,buyHead,buyerHead);//发奖金
+		getchar();
 		return 1;
 	}
 	else if(ch == 27)
@@ -1082,42 +1216,48 @@ int awardBuyer(PubLink *pubHead,BuyLink *buyHead,BuyerLink *buyerHead)
 		printf("目前还没有彩民购买本期彩票！\n");
 		return 0;
 	}
+	printf("中奖信息公布:\n");
+	printf("发行期号   彩票序列号    账户名   中奖等级    购买号码\t\t    购买注数    中奖金额\n");
 	while(NULL != cursor)
 	{
 		BuyerLink *buyerNode = getPreNodePoint(buyerHead,cursor -> data.buyerData.name) -> next;
 		level = getLevel(num,cursor -> data.buyNum);
-		printf("中奖信息公布:\n");
-		printf("发行期号   彩票序列号    账户名   中奖等级    购买号码\t\t    购买注数    中奖金额\n");
 		switch(level)
 		{
 			case 1://一等奖
-				cursor -> data.money = 10000 * cursor -> data.buyCount;
+				cursor -> data.money = lastPubNode -> data.totalMoney / 10  * cursor -> data.buyCount;
 				buyerNode -> data.balance += cursor -> data.money;
+				lastPubNode -> data.totalMoney -= cursor -> data.money;
 				printAwardBuyerMessage(cursor,level);
 				break;
 			case 2://二等奖
-				cursor -> data.money = 5000 * cursor -> data.buyCount;
+				cursor -> data.money = lastPubNode -> data.totalMoney / 20 * cursor -> data.buyCount;
 				buyerNode -> data.balance += cursor -> data.money;
+				lastPubNode -> data.totalMoney -= cursor -> data.money;
 				printAwardBuyerMessage(cursor,level);
 				break;	
 			case 3://三等奖
 				cursor -> data.money = 3000 * cursor -> data.buyCount;
 				buyerNode -> data.balance += cursor -> data.money;
+				lastPubNode -> data.totalMoney -= cursor -> data.money;
 				printAwardBuyerMessage(cursor,level);
 				break;
 			case 4://四等奖
 				cursor -> data.money = 200 * cursor -> data.buyCount;
 				buyerNode -> data.balance += cursor -> data.money;
+				lastPubNode -> data.totalMoney -= cursor -> data.money;
 				printAwardBuyerMessage(cursor,level);				
 				break;
 			case 5://五等奖
 				cursor -> data.money = 10 * cursor -> data.buyCount;
 				buyerNode -> data.balance += cursor -> data.money;
+				lastPubNode -> data.totalMoney -= cursor -> data.money;
 				printAwardBuyerMessage(cursor,level);
 				break;
 			case 6://六等奖
 				cursor -> data.money = 5 * cursor -> data.buyCount;
 				buyerNode -> data.balance += cursor -> data.money;
+				lastPubNode -> data.totalMoney -= cursor -> data.money;
 				printAwardBuyerMessage(cursor,level);
 				break;
 			case 0://没中奖
@@ -1126,12 +1266,14 @@ int awardBuyer(PubLink *pubHead,BuyLink *buyHead,BuyerLink *buyerHead)
 				printf("error\n");
 				saveBuyData(buyHead);
 				saveData(buyerHead);
+				savePubData(pubHead);
 				return 0;
 		}
 		cursor = cursor -> next;
 	}
 	saveBuyData(buyHead);
 	saveData(buyerHead);
+	savePubData(pubHead);
 	return 1;
 }
 int printAwardBuyerMessage(BuyLink *cursor,int level)
@@ -1250,7 +1392,11 @@ int buyLottery(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead,char *name
 		}
 		else if(2 == choose)
 		{
-			buyerSelect(buyerHead,pubHead,buyHead,name);
+			if(0 == buyerSelect(buyerHead,pubHead,buyHead,name))
+			{
+				printf("手动选号失败！\n");
+				return 0;
+			}
 			return 1;
 		}
 		else
@@ -1312,6 +1458,12 @@ int machineSelect(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead,char *n
 	}
 	else
 	{
+		BuyerLink *buyerNode = getPreNodePoint(buyerHead,name) -> next;
+		if(buyerNode -> data.balance - buyCount * 2 < 0)
+		{
+			printf("余额不足，购买失败，请尽快充值!\n");
+			return 0;
+		}
 		Buy buy;
 		memset(&buy,0,sizeof(Buy));
 		buy.issue = getLastPubNodePoint(pubHead) -> data.issue;
@@ -1330,7 +1482,14 @@ int machineSelect(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead,char *n
 		buy.money = 0.00;
 		insertAfterBuyLink(buyHead,&buy);
 		saveBuyData(buyHead);
+		buyerNode -> data.balance -= buyCount * 2;
+		saveData(buyerHead);
 		printf("机选成功！\n");
+		PubLink *lastPubNodePoint = getLastPubNodePoint(pubHead);
+		lastPubNodePoint -> data.sellCount += buyCount;
+		lastPubNodePoint -> data.totalMoney += buyCount * 2;
+		savePubData(pubHead);
+		printf("机选购买彩票成功!\n");
 		return 1;
 	}
 }
@@ -1349,6 +1508,10 @@ int buyerSelect(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead,char *nam
 			printf("格式错误！\n");
 			return 0;
 		}
+		if(num[i] > 33 || num[i] < 1)
+		{
+			return 0;
+		}
 	}
 	printf("请输入蓝球号码:");
 	scanf("%d",&num[6]);
@@ -1356,6 +1519,10 @@ int buyerSelect(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead,char *nam
 	{
 		while(getchar() != '\n');
 		printf("格式错误！\n");
+		return 0;
+	}
+	if(num[6] > 17 || num[6] < 1)
+	{
 		return 0;
 	}
 	int j = 0;
@@ -1394,6 +1561,12 @@ int buyerSelect(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead,char *nam
 	}
 	else
 	{
+		BuyerLink *buyerNode = getPreNodePoint(buyerHead,name) -> next;
+		if(buyerNode -> data.balance - buyCount * 2 < 0)
+		{
+			printf("余额不足，购买失败，请尽快充值!\n");
+			return 0;
+		}
 		Buy buy;
 		memset(&buy,0,sizeof(Buy));
 		Buyer *buyer = &(getPreNodePoint(buyerHead,name) -> next -> data);
@@ -1414,19 +1587,26 @@ int buyerSelect(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead,char *nam
 		buy.money = 0.00;
 		insertAfterBuyLink(buyHead,&buy);
 		saveBuyData(buyHead);
+		buyerNode -> data.balance -= buyCount * 2;
+		saveData(buyerHead);
+		printf("手动选号成功！\n");
+		PubLink *lastPubNodePoint = getLastPubNodePoint(pubHead);
+		lastPubNodePoint -> data.sellCount += buyCount;
+		savePubData(pubHead);
+		printf("手动选好购买成功!\n");
 		return 1;
 	}
 }
 int printBuyRecord(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead,char *name)
 {
 	buyHead = buyHead -> next;
-	printf("购买期号 彩票编号 购买号码\t\t开奖号码\t\t选号方式 购买注数 获奖金额 开奖状态 兑奖状态\n");	
+	printf("购买期号 彩票编号 购买号码\t\t开奖号码\t\t选号方式 购买注数 获奖金额    开奖状态 兑奖状态\n");	
 	while(NULL !=buyHead)
 	{		
 		if(0 == strcmp(name,buyHead -> data.buyerData.name))
 		{
 			Pub pub = getPrePubNodePoint(pubHead,buyHead -> data.issue) -> next -> data;
-			printf("%08d %08d \033[31m%02d %02d %02d %02d %02d %02d\033[0m \033[34m%02d\033[0m  \033[31m%02d %02d %02d %02d %02d %02d\033[0m \033[34m%02d\033[0m    %s\t %d\t  %.2lf\t   %s   %s\n",\
+			printf("%08d %08d \033[31m%02d %02d %02d %02d %02d %02d\033[0m \033[34m%02d\033[0m  \033[31m%02d %02d %02d %02d %02d %02d\033[0m \033[34m%02d\033[0m    %s\t %d\t  %08.2lf    %s   %s\n",\
 					buyHead -> data.issue,\
 					buyHead -> data.id,\
 					buyHead -> data.buyNum[0],\
@@ -1451,5 +1631,6 @@ int printBuyRecord(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead,char *
 		}
 		buyHead = buyHead -> next;
 	}
+	getchar();
 	return 1;
 }

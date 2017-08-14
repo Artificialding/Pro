@@ -30,7 +30,7 @@ int buyerSelect(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead,char *nam
 int printBuyRecord(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead,char *name); //购彩记录
 int rechargeAccount(BuyerLink *buyerHead,char *name);//账户充值
 int changePasswd(BuyerLink *buyerHead,char *name);   //修改密码
-int identifyPasswd(char *passwd,int chance);         //输入比对原密码
+int identifyPasswd(char *passwd,int chance,char *name);         //输入比对原密码
 int logOffAccount(BuyerLink *buyerHead,char *name);  //注销账户
 //int buyerComment(BuyerLink *buyerHead,char *name,ComLink *commentHead);//彩民评论区
 
@@ -43,6 +43,7 @@ int printBuyerMessageByName(BuyerLink *buyerHead);//根据账户名
 int printBuyerMessageById(BuyerLink *buyerHead);//根据账户id
 int printBuyerMessageByBalance(BuyerLink *buyerHead);//根据账户余额
 int sortBuyerMessage(BuyerLink *buyerHead);    //排序
+int prizePoolAmount(PubLink *pubHead);         //奖池
 
 /**************Model层*公正员菜单*逻辑函数声明*********************/
 int authorization(PubLink *pubHead);           //授权发行

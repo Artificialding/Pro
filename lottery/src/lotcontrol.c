@@ -159,7 +159,7 @@ int adminMenuControl(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 				publishLottery(pubHead);
 				break;
 			case 2:
-				//prizePoolAmount(pubHead);
+				prizePoolAmount(pubHead);
 				break;
 			case 3://发行记录
 				printPubRecord(pubHead);
