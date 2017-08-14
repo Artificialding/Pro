@@ -12,7 +12,7 @@ DEPEND+=obj/lotview.o
 #obj/%.o:obj/%.s
 #	$(CC) -c $^ -o $@
 obj/%.o:src/%.c
-	$(CC) -c $^ -o $@ -Wall -I include
+	$(CC) -c $^ -o $@ -Wall -I include -lm
 bin/main:$(DEPEND)
 	$(CC)    $^ -o $@
 	bin/main

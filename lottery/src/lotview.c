@@ -35,8 +35,9 @@ void buyerMenu(void)
 	printf("\t\t\t^\t\t\t3.彩民评论\t\t\t^\n");
 	printf("\t\t\t^\t\t\t4.购买记录\t\t\t^\n");
 	printf("\t\t\t^\t\t\t5.账户充值\t\t\t^\n");
-	printf("\t\t\t^\t\t\t6.修改密码\t\t\t^\n");
-	printf("\t\t\t^\t\t\t7.注销账户\t\t\t^\n");
+	printf("\t\t\t^\t\t\t6.有奖游戏\t\t\t^\n");
+	printf("\t\t\t^\t\t\t7.修改密码\t\t\t^\n");
+	printf("\t\t\t^\t\t\t8.注销账户\t\t\t^\n");
 	printf("\t\t\t^\t\t\t0.退出登录\t\t\t^\n");
 	printf("\t\t\t^\t\t\t\t\t\t\t^\n");
 	printf("\t\t\t<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n");
@@ -56,7 +57,7 @@ void adminMenu(void)
 	printf("\t\t\t^\t\t\t6.彩民排序\t\t\t^\n");
 	printf("\t\t\t^\t\t\t7.账户充值\t\t\t^\n");
 	printf("\t\t\t^\t\t\t8.账户找回\t\t\t^\n");	
-	printf("\t\t\t^\t\t\t0.推出登录\t\t\t^\n");
+	printf("\t\t\t^\t\t\t0.退出登录\t\t\t^\n");
 	printf("\t\t\t^\t\t\t\t\t\t\t^\n");
 	printf("\t\t\t<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n");
 }

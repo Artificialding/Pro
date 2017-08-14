@@ -33,9 +33,13 @@ int buyerSelect(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead,char *nam
 int printBuyRecord(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead,char *name); //购彩记录
 int rechargeAccount(BuyerLink *buyerHead,char *name);//账户充值
 int changePasswd(BuyerLink *buyerHead,char *name);   //修改密码
-int identifyPasswd(char *passwd,int chance,char *name);         //输入比对原密码
+int identifyPasswd(char *passwd,int chance,char *name);//输入比对原密码
 int logOffAccount(BuyerLink *buyerHead,char *name);  //注销账户
-//int buyerComment(BuyerLink *buyerHead,char *name,ComLink *commentHead);//彩民评论区
+//int buyerComment(BuyerLink *buyerHead,char *name,ComLink *comHead);//彩民评论区
+int playGame(BuyerLink *buyerHead,char *name);      //有奖游戏
+int guessNumGame(BuyerLink *buyerHead,char *name);//猜数游戏
+int hanoiGame(BuyerLink *buyerHead,char *name);   //汉诺塔游戏
+void hanoi(int num,int p1,int p2,int p3,int *count);         //汉诺塔过程
 
 /**************Model层*管理员菜单*逻辑函数声明*********************/
 int publishLottery(PubLink *pubHead);          //发行彩票

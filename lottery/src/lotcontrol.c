@@ -58,7 +58,7 @@ void mainMenuControl(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 			case 3://开奖规则
 				lotteryRole();
 				break;
-			case 4:
+			case 4://找回密码
 				retrievalPasswd(buyerHead);
 				break;
 			case 0://退出系统
@@ -108,7 +108,7 @@ void buyerMenuControl(BuyerLink *buyerHead,char *name,PubLink *pubHead,BuyLink *
 				buyLottery(buyerHead,pubHead,buyHead,name);
 				break;
 			case 3://彩民评论
-				//buyerComment(buyerHead,commentHead);
+				//buyerComment(buyerHead,name,commentHead);
 				break;
 			case 4://历史记录
 				printBuyRecord(buyerHead,pubHead,buyHead,name);
@@ -116,10 +116,13 @@ void buyerMenuControl(BuyerLink *buyerHead,char *name,PubLink *pubHead,BuyLink *
 			case 5://账户充值
 				rechargeAccount(buyerHead,name);
 				break;
-			case 6://修改密码
+			case 6://有奖游戏
+				playGame(buyerHead,name);
+				break;
+			case 7://修改密码
 				changePasswd(buyerHead,name);
 				return;
-			case 7://注销账户
+			case 8://注销账户
 				if(1 == logOffAccount(buyerHead,name))
 				{
 					return;

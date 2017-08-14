@@ -18,6 +18,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <termios.h>
+#include <math.h>
 int lotteryRole()
 {
 	printf("\t\t\t双色球玩法\n");
@@ -431,6 +432,7 @@ int changePasswd(BuyerLink *buyerHead,char *name)
 				{
 					strcpy(pre -> data.passwd,confirmPasswd);
 					printf("密码修改成功,请重新登录！\n");
+					saveData(buyerHead);
 					return 1;
 				}
 				else
@@ -442,7 +444,9 @@ int changePasswd(BuyerLink *buyerHead,char *name)
 		}
 		else
 		{
+			pre -> data.flag = 1;
 			printf("%d次机会用完,冻结！\n",chance);
+			saveData(buyerHead);
 			return 0;
 		}
 	}
@@ -1237,6 +1241,10 @@ int awardBuyer(PubLink *pubHead,BuyLink *buyHead,BuyerLink *buyerHead)
 	while(NULL != cursor)
 	{
 		BuyerLink *buyerNode = getPreNodePoint(buyerHead,cursor -> data.buyerData.name) -> next;
+		if(buyerNode -> data.flag == 1)//帐号被冻结不能参加开奖
+		{
+			continue; 
+		}
 		level = getLevel(num,cursor -> data.buyNum);
 		switch(level)
 		{
@@ -1798,5 +1806,171 @@ int retrievalPasswd(BuyerLink *buyerHead)
 	{
 		printf("密保问题回答错误，不允许重置密码！\n");
 		return 0;
+	}
+}
+
+/*int buyerComment(BuyerLink *buyerHead,char *name,ComLink *comHead)
+{
+	if(NULL == buyerHead)
+	{
+		printf(BUEYR_HEAD_IS_NULL);
+		return 0;
+	}
+	if(NULL == comHead)
+	{
+		printf(COM_HEAD_IS_NULL);
+		return 0;
+	}
+	printf(">1.看评论\n");
+	printf(">2.写评论\n");
+	printf("选择:");
+	int choose == 0;
+	scanf("%d",&choose);
+	if(getchar() != '\n')
+	{
+		while(getchar() != '\n');
+		printf("格式有误！\n");
+		return 0;
+	}
+	if(1 == choose)
+	{
+
+	}
+	else if(2 == choose)
+	{
+
+	}
+	else
+	{
+		printf("error\n");
+		return 0;
+	}
+		
+}*/
+int playGame(BuyerLink *buyerHead,char *name)
+{
+	system("clear");
+	printf("\t\t\t\t>>>>>>玩的越多，赚的越多<<<<<<<<\n");
+	printf("\t\t\t\t>\t1.汉诺塔游戏\n");
+	printf("\t\t\t\t>\t2.猜数游戏\n\n");
+	int choose = 0;
+	printf("\t\t\t\t选择:");
+	scanf("%d",&choose);
+	if(getchar() != '\n')
+	{
+		while(getchar() != '\n');
+		printf("格式有误！\n");
+		return 0;
+	}
+	switch(choose)
+	{
+		case 1:
+			hanoiGame(buyerHead,name);
+			break;
+		case 2:
+			guessNumGame(buyerHead,name);
+			break;
+		default:
+			printf("选择有误！\n");
+			break;
+	}
+	return 1;
+}
+
+int guessNumGame(BuyerLink *buyerHead,char *name)
+{
+	system("clear");
+	printf("\t\t\t\t***猜数游戏***\n\n");
+	printf("\t\t\t\t游戏规则：\n");
+	printf("\t\t\t\t根据提示输入猜测的数字，如果在5次之内猜中，奖励2元!\n");
+	srand(time(NULL));
+	int num = rand() % 100;
+	int guessNum = 0;
+	int i = 0;
+	printf("\t\t\t\t请输入0 ～100内的整数：\n");
+	for(i = 0;i < 5;++i)
+	{
+		printf("\t\t\t\t请输入：");
+		scanf("%d",&guessNum);
+		if(getchar() != '\n')
+		{
+			while(getchar() != '\n');
+			printf("\t\t\t\t格式有误！\n");
+			return 0;
+		}
+		if(guessNum == num)
+		{
+			printf("\t\t\t\t恭喜你猜对了!\n");
+			BuyerLink *buyerPreNode = getPreNodePoint(buyerHead,name);
+			buyerPreNode -> next -> data.balance += 2;
+			printf("\t\t\t\t奖金已经发放到您的账户中！");
+			saveData(buyerHead);
+		}
+		else if(guessNum < num)
+		{
+			printf("\t\t\t\t小了！\n");
+		}
+		else
+		{
+			printf("\t\t\t\t大了！\n");
+		}
+	}
+	printf("\t\t\t\t真遗憾，没有猜中！\n");
+	printf("\t\t\t\t正确答案是:%d\n",num);
+	getchar();
+	return 1;
+}
+
+int hanoiGame(BuyerLink *buyerHead,char *name)
+{
+	system("clear");
+	printf("\t\t\t\t***汉塔诺游戏***\n\n");
+	printf("\t\t\t\t游戏规则：\n");
+	printf("\t\t\t\t计算机产生一个10以内的随机数作为汉诺塔的个数，\n\
+	\t\t\t\t你能算出最少的移动步数吗？\n\
+	\t\t\t\t输入正确答案，奖励10元!\n");
+	srand(time(NULL));
+	int num = rand() % 9 + 1;
+	printf("\t\t\t\t%d个汉诺塔的最少移动步数是：",num);
+	int answer = pow(2,num) - 1;
+	int input = 0;
+	scanf("%d",&input);
+	if(getchar() != '\n')
+	{
+		while(getchar() != '\n');
+		printf("\t\t\t\t格式有误！\n");
+		return 0;
+	}
+	if(answer == input)
+	{
+		BuyerLink *buyerPreNode = getPreNodePoint(buyerHead,name);
+		buyerPreNode -> next -> data.balance += 10;
+		saveData(buyerHead);
+		printf("\t\t\t\t恭喜你答对了，奖金已经发放到你的账户！\n");		
+	}
+	else
+	{
+		printf("\t\t\t\t真遗憾，没有答对！\n");
+	}
+	printf("\t\t\t\t移动过程是：\n");
+	int count = 0;
+	hanoi(num,1,2,3,&count);
+	printf("\t\t\t\t%d个汉诺塔至少需要移动%d次!\n",num,count);
+	getchar();	
+	return 1;
+}
+void hanoi(int num,int p1,int p2,int p3,int *count)
+{
+	if(num == 1)
+	{
+		printf("\t\t\t\t盘子从 %d 柱移动到 %d 柱\n",p1,p3);
+		++(*count);
+	}
+	else
+	{
+		hanoi(num - 1 ,p1,p3,p2,count);
+		printf("\t\t\t\t盘子从 %d 柱移动到 %d 柱\n",p1,p3);
+		++(*count);
+		hanoi(num - 1,p2,p1,p3,count);
 	}
 }
