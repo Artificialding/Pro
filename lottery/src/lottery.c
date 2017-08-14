@@ -72,9 +72,15 @@ int identifyCardId(char *cardId)
 			strYear[2] = cardId[8];
 			strYear[3] = cardId[9];
 			int year = atoi(strYear);
-			if(2017 - year < 18)//未满18周岁
+			time_t t;
+			struct tm *pt;
+			time(&t);
+			pt = localtime(&t);
+			int thisYear = pt -> tm_year + 1900;
+			if(thisYear - year < 18)//未满18周岁
 			{
 				printf("对不起！您未满18周岁\n根据《中华人民共和国未成年人保护法》相关规定，禁止未成年人购买彩票！\n");
+				getchar();
 				return 0;
 			}
 		}		
