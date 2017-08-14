@@ -19,6 +19,7 @@ void mainMenu(void)
 	printf("\t\t\t^\t\t\t1.登录账户\t\t\t^\n");
 	printf("\t\t\t^\t\t\t2.注册账户\t\t\t^\n");
 	printf("\t\t\t^\t\t\t3.开奖规则\t\t\t^\n");
+	printf("\t\t\t^\t\t\t4.找回密码\t\t\t^\n");
 	printf("\t\t\t^\t\t\t0.退出系统\t\t\t^\n");
 	printf("\t\t\t^\t\t\t\t\t\t\t^\n");
 	printf("\t\t\t<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n");
@@ -53,6 +54,8 @@ void adminMenu(void)
 	printf("\t\t\t^\t\t\t4.彩民信息\t\t\t^\n");
 	printf("\t\t\t^\t\t\t5.查找彩民\t\t\t^\n");
 	printf("\t\t\t^\t\t\t6.彩民排序\t\t\t^\n");
+	printf("\t\t\t^\t\t\t7.账户充值\t\t\t^\n");
+	printf("\t\t\t^\t\t\t8.账户找回\t\t\t^\n");	
 	printf("\t\t\t^\t\t\t0.推出登录\t\t\t^\n");
 	printf("\t\t\t^\t\t\t\t\t\t\t^\n");
 	printf("\t\t\t<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n");

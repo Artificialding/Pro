@@ -58,6 +58,9 @@ void mainMenuControl(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 			case 3://开奖规则
 				lotteryRole();
 				break;
+			case 4:
+				retrievalPasswd(buyerHead);
+				break;
 			case 0://退出系统
 				saveData(buyerHead);
 				savePubData(pubHead);
@@ -172,6 +175,12 @@ int adminMenuControl(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead)
 				break;
 			case 6://排序
 				sortBuyerMessage(buyerHead);
+				break;
+			case 7://账户充值
+				rechargeBuyerAccount(buyerHead);
+				break;
+			case 8://账户找回
+				repairBuyerAccount(buyerHead);
 				break;
 			case 0://退出登录
 				return 1;

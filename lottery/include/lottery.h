@@ -21,8 +21,9 @@ int getCurrentMaxId(BuyerLink *buyerHead);     //获取当前最大id值
 int buyerRegist(BuyerLink *buyerHead);         //彩民注册
 int loginSystem(BuyerLink *buyerHeadi,PubLink *pubHead,BuyLink *buyHead);  //登录
 int getch(void);
-void getPassword(char *pcPWD);
-int checkVerificationCode();
+void getPassword(char *pcPWD);                 //密码隐藏
+int checkVerificationCode();                   //生成验证码
+int retrievalPasswd(BuyerLink *buyerHead);     //找回密码
 
 /**************Model层*彩民菜单*逻辑函数声明*********************/
 int printOneMessage(BuyerLink *buyerHead,char *name);//个人信息
@@ -46,6 +47,8 @@ int printBuyerMessageById(BuyerLink *buyerHead);//根据账户id
 int printBuyerMessageByBalance(BuyerLink *buyerHead);//根据账户余额
 int sortBuyerMessage(BuyerLink *buyerHead);    //排序
 int prizePoolAmount(PubLink *pubHead);         //奖池
+int rechargeBuyerAccount(BuyerLink *buyerHead);//账户充值
+int repairBuyerAccount(BuyerLink *buyerHead);  //激活账户
 
 /**************Model层*公正员菜单*逻辑函数声明*********************/
 int authorization(PubLink *pubHead);           //授权发行
@@ -55,5 +58,5 @@ int machineCreate(int *num);           //机器出球
 int notaryCreate(int *num);            //人工出球
 int awardBuyer(PubLink *pubHead,BuyLink *buyHead,BuyerLink *buyerHead);//发放奖金
 int getLevel(int *pubNum,int *buyNum); //返回中奖等级
-int printAwardBuyerMessage(BuyLink *cursor,int level);
+int printAwardBuyerMessage(BuyLink *cursor,int level);//列出获奖彩民信息
 #endif

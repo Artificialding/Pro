@@ -195,11 +195,15 @@ int buyerRegist(BuyerLink *buyerHead)
 		return 0;
 	}
 	strcpy(buyer.passwd,initialPasswd);
+	printf("密保问题：您最喜欢的水果是:\n");
+	char fruit[20] = "";
+	scanf("%s",fruit);
 	/**************初始化id*账户余额*flag*state*************/
 	buyer.id = getCurrentMaxId(buyerHead) + 1;
 	buyer.balance = 0.00;
 	buyer.flag = 0;
 	strcpy(buyer.state,"激活");
+	strcpy(buyer.question,fruit);
 	/******************后插彩民节点********************/
 	if(0 == insertAfterBuyerLink(buyerHead,&buyer))
 	{
@@ -1701,5 +1705,92 @@ void getPassword(char *pcPWD)
 		{
 			printf("\a");
 		}
+	}
+}
+
+int rechargeBuyerAccount(BuyerLink *buyerHead)
+{
+	if(NULL == buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return 0;
+	}
+	printf("请输入账户名:");
+	char name[20] = "";
+	scanf("%s",name);
+	rechargeAccount(buyerHead,name);
+	return 1;
+}
+int repairBuyerAccount(BuyerLink *buyerHead)
+{
+	if(NULL == buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return 0;
+	}
+	printf("请输入账户名:");
+	char name[20] = "";
+	scanf("%s",name);
+	BuyerLink *buyerPreNode = getPreNodePoint(buyerHead,name);
+	if(NULL == buyerPreNode)
+	{
+		printf("您输入的账户名不存在！\n");
+		return 0;
+	}
+	if(buyerPreNode -> next -> data.flag == 0)
+	{
+		printf("您输入的账户没有被冻结不需要激活！\n");
+		return 0;
+	}
+	buyerPreNode -> next -> data.flag = 0;
+	saveData(buyerHead);
+	printf("账户激活成功！\n");
+	return 1;
+}
+
+int retrievalPasswd(BuyerLink *buyerHead)
+{
+	if(NULL == buyerHead)
+	{
+		printf(BUYER_HEAD_IS_NULL);
+		return 0;
+	}
+	printf("请输入账户名:");
+	char name[20] = "";
+	scanf("%s",name);
+	BuyerLink *buyerPreNode = getPreNodePoint(buyerHead,name);
+	if(NULL == buyerPreNode)
+	{
+		printf("您输入的账户不存在！\n");
+		return 0;
+	}
+	printf("您最喜欢的水果是:");
+	char fruit[20] = "";
+	scanf("%s",fruit);
+	if(0 == strcmp(buyerPreNode -> next -> data.question,fruit))
+	{
+		char newPasswd1[10] = "";
+		char newPasswd2[10] = "";
+		printf("请输入新密码:");
+		scanf("%s",newPasswd1);
+		printf("请再次输入密码:");
+		scanf("%s",newPasswd2);
+		if(0 == strcmp(newPasswd1,newPasswd2))
+		{
+			strcpy(buyerPreNode -> next -> data.passwd,newPasswd2);
+			saveData(buyerHead);
+			printf("密码重置成功！\n");
+			return 1;
+		}
+		else
+		{
+			printf("两次输入密码不一致，重置失败！\n");
+			return 0;
+		}
+	}
+	else
+	{
+		printf("密保问题回答错误，不允许重置密码！\n");
+		return 0;
 	}
 }
