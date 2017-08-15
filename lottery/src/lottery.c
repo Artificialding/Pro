@@ -589,6 +589,11 @@ int prizePoolAmount(PubLink *pubHead)
 			printf("格式有误！\n");
 			return 0;
 		}
+		if(poolMoney < 0)
+		{
+			printf("金额不能为负！\n");
+			return 0;
+		}
 		lastPubNodePoint -> data.totalMoney = poolMoney;
 		savePubData(pubHead);
 		printf("奖池目前的金额是:%.2lf",lastPubNodePoint -> data.totalMoney);
@@ -1500,18 +1505,18 @@ int machineSelect(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead,char *n
 		buy.flag = 0;
 		strcpy(buy.strFlag,"机选");
 		buy.buyCount = buyCount;
-		buy.buyerData = getPreNodePoint(buyerHead,name) -> next ->data;
+		buy.buyerData = getPreNodePoint(buyerHead,name) -> next -> data;
 		buy.state = 0;
 		strcpy(buy.strState,"未兑奖");
 		buy.money = 0.00;
 		insertAfterBuyLink(buyHead,&buy);
 		saveBuyData(buyHead);
-		buyerNode -> data.balance -= buyCount * 2;
+		buyerNode -> data.balance -= buyCount * 2;//彩民扣钱
 		saveData(buyerHead);
 		printf("机选成功！\n");
 		PubLink *lastPubNodePoint = getLastPubNodePoint(pubHead);
 		lastPubNodePoint -> data.sellCount += buyCount;
-		lastPubNodePoint -> data.totalMoney += buyCount * 2;
+		lastPubNodePoint -> data.totalMoney += buyCount * 2;//奖池收钱
 		savePubData(pubHead);
 		printf("机选购买彩票成功!\n");
 		return 1;
@@ -1593,7 +1598,6 @@ int buyerSelect(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead,char *nam
 		}
 		Buy buy;
 		memset(&buy,0,sizeof(Buy));
-		Buyer *buyer = &(getPreNodePoint(buyerHead,name) -> next -> data);
 		buy.issue = getLastPubNodePoint(pubHead) -> data.issue;
 		buy.id = getLastBuyNodePoint(buyHead) -> data.id + 1;
 		int i = 0;
@@ -1604,8 +1608,7 @@ int buyerSelect(BuyerLink *buyerHead,PubLink *pubHead,BuyLink *buyHead,char *nam
 		buy.flag = 0;
 		strcpy(buy.strFlag,"手选");
 		buy.buyCount = buyCount;
-		buyer -> balance -= buy.buyCount * 2;
-		buy.buyerData = getPreNodePoint(buyerHead,name) -> next ->data;
+		buy.buyerData = getPreNodePoint(buyerHead,name) -> next -> data;
 		buy.state = 0; 
 		strcpy(buy.strState,"未兑奖");
 		buy.money = 0.00;
@@ -1905,6 +1908,7 @@ int guessNumGame(BuyerLink *buyerHead,char *name)
 			buyerPreNode -> next -> data.balance += 2;
 			printf("\t\t\t\t奖金已经发放到您的账户中！");
 			saveData(buyerHead);
+			return 1;
 		}
 		else if(guessNum < num)
 		{
@@ -1946,7 +1950,7 @@ int hanoiGame(BuyerLink *buyerHead,char *name)
 		BuyerLink *buyerPreNode = getPreNodePoint(buyerHead,name);
 		buyerPreNode -> next -> data.balance += 10;
 		saveData(buyerHead);
-		printf("\t\t\t\t恭喜你答对了，奖金已经发放到你的账户！\n");		
+		printf("\t\t\t\t恭喜你答对了，奖金已经发放到你的账户！\n");	
 	}
 	else
 	{
