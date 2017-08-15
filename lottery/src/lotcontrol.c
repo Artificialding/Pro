@@ -107,8 +107,8 @@ void buyerMenuControl(BuyerLink *buyerHead,char *name,PubLink *pubHead,BuyLink *
 			case 2://购买彩票
 				buyLottery(buyerHead,pubHead,buyHead,name);
 				break;
-			case 3://彩民评论
-				//buyerComment(buyerHead,name,commentHead);
+			case 3://概率统计
+				//reviewNum(pubHead);
 				break;
 			case 4://历史记录
 				printBuyRecord(buyerHead,pubHead,buyHead,name);

@@ -1978,3 +1978,214 @@ void hanoi(int num,int p1,int p2,int p3,int *count)
 		hanoi(num - 1,p2,p1,p3,count);
 	}
 }
+
+int reviewNum(PubLink *pubHead)
+{
+	if(NULL == pubHead)
+	{
+		printf(PUB_HEAD_IS_NULL);
+		return 0;
+	}
+	printf("yes0\n");
+	int num[33] = {0};//统计出现次数
+	int num_blue[16] = {0};
+	PubLink *cursor = pubHead -> next;
+	int count = 0;
+	if(cursor == NULL)
+	{
+		printf("还没有开奖记录！\n");
+		return 0;
+	}
+	while(NULL != cursor)
+	{
+		int i = 0;
+		while(i < 6)
+		{
+			switch(cursor -> data.num[i])
+			{
+			printf("yes\n");
+				case 1:
+					++num[0];
+					break;
+				case 2:
+					++num[1];
+					break;
+				case 3:
+					++num[2];
+					break;
+				case 4:
+					++num[3];
+					break;
+				case 5:
+					++num[4];
+					break;
+				case 6:
+					++num[5];
+					break;
+				case 7:
+					++num[6];
+					break;
+				case 8:
+					++num[7];
+					break;
+				case 9:
+					++num[8];
+					break;
+				case 10:
+					++num[9];
+					break;
+				case 11:
+					++num[10];
+					break;
+				case 12:
+					++num[11];
+					break;
+				case 13:
+					++num[12];
+					break;
+				case 14:
+					++num[13];
+					break;
+				case 15:
+					++num[14];
+					break;
+				case 16:
+					++num[15];
+					break;
+				case 17:
+					++num[16];
+					break;
+				case 18:
+					++num[17];
+					break;
+				case 19:
+					++num[18];
+					break;
+				case 20:
+					++num[19];
+					break;
+				case 21:
+					++num[20];
+					break;
+				case 22:
+					++num[21];
+					break;
+				case 23:
+					++num[22];
+					break;
+				case 24:
+					++num[23];
+					break;
+				case 25:
+					++num[24];
+					break;
+				case 26:
+					++num[25];
+					break;
+				case 27:
+					++num[26];
+					break;
+				case 28:
+					++num[27];
+					break;
+				case 29:
+					++num[28];
+					break;
+				case 30:
+					++num[29];
+					break;
+				case 31:
+					++num[30];
+					break;
+				case 32:
+					++num[31];
+					break;
+				case 33:
+					++num[32];
+					break;
+				default:
+					break;
+			}
+			++i;
+		}
+		switch(cursor -> data.num[6])
+		{
+				case 1:
+					++num_blue[0];
+					break;
+				case 2:
+					++num_blue[1];
+					break;
+				case 3:
+					++num_blue[2];
+					break;
+				case 4:
+					++num_blue[3];
+					break;
+				case 5:
+					++num_blue[4];
+					break;
+				case 6:
+					++num_blue[5];
+					break;
+				case 7:
+					++num_blue[6];
+					break;
+				case 8:
+					++num_blue[7];
+					break;
+				case 9:
+					++num_blue[8];
+					break;
+				case 10:
+					++num_blue[9];
+					break;
+				case 11:
+					++num_blue[10];
+					break;
+				case 12:
+					++num_blue[11];
+					break;
+				case 13:
+					++num_blue[12];
+					break;
+				case 14:
+					++num_blue[13];
+					break;
+				case 15:
+					++num_blue[14];
+					break;
+				case 16:
+					++num_blue[15];
+					break;
+				default:
+					break;
+		}
+		++count;
+	}
+	int countRed = count * 6;
+	int countBlue = count * 1;
+	double centerRed[33] = {0};
+	double centerBlue[16] = {0};
+	int i = 0;
+	for(i = 0;i < 33;++i)
+	{
+		centerRed[i] = (double)num[i] / countRed;
+	}
+	for(i = 0;i < 16;++i)
+	{
+		centerBlue[i] = (double)num_blue[i] / countBlue;
+	}
+
+	printf("\t红球走势：\n");
+	for(i = 32;i >= 0;--i)
+	{
+		printf("\t%d|:%.2lf\n",i+1,centerRed[i]);
+	}
+	printf("蓝球走势：\n");
+	for(i = 15;i >= 0;--i)
+	{
+		printf("\t%d||:%.2lf\n",i+1,centerBlue[i]);
+	}
+	return 1;
+}

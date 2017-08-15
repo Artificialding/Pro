@@ -32,7 +32,7 @@ void buyerMenu(void)
 	printf("\t\t\t^\t\t\t\t\t\t\t^\n");
 	printf("\t\t\t^\t\t\t1.个人信息\t\t\t^\n");
 	printf("\t\t\t^\t\t\t2.购买彩票\t\t\t^\n");
-	printf("\t\t\t^\t\t\t3.彩民评论\t\t\t^\n");
+	printf("\t\t\t^\t\t\t3.出球走势\t\t\t^\n");
 	printf("\t\t\t^\t\t\t4.购买记录\t\t\t^\n");
 	printf("\t\t\t^\t\t\t5.账户充值\t\t\t^\n");
 	printf("\t\t\t^\t\t\t6.有奖游戏\t\t\t^\n");
