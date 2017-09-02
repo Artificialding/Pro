@@ -19,6 +19,7 @@
 #include <unistd.h>
 #include <termios.h>
 #include <math.h>
+
 int lotteryRole()
 {
 	printf("\t\t\t双色球玩法\n");
@@ -1935,16 +1936,20 @@ int hanoiGame(BuyerLink *buyerHead,char *name)
 	\t\t\t\t输入正确答案，奖励10元!\n");
 	srand(time(NULL));
 	int num = rand() % 9 + 1;
-	printf("\t\t\t\t%d个汉诺塔的最少移动步数是：",num);
-	int answer = pow(2,num) - 1;
+	printf("\t\t\t\t%d个汉诺塔最少的移动步数：",num);
 	int input = 0;
 	scanf("%d",&input);
 	if(getchar() != '\n')
 	{
 		while(getchar() != '\n');
-		printf("\t\t\t\t格式有误！\n");
+		printf("格式有误！\n");
 		return 0;
 	}
+	int answer = 0;
+	printf("\t\t\t\t%d个汉诺塔的移动过程：\n",num);
+	hanoi(num,1,2,3,&answer);
+	printf("\t\t\t\t一共移动了%d步！\n",answer);
+	answer = pow(2,num) - 1;
 	if(answer == input)
 	{
 		BuyerLink *buyerPreNode = getPreNodePoint(buyerHead,name);
@@ -1956,10 +1961,6 @@ int hanoiGame(BuyerLink *buyerHead,char *name)
 	{
 		printf("\t\t\t\t真遗憾，没有答对！\n");
 	}
-	printf("\t\t\t\t移动过程是：\n");
-	int count = 0;
-	hanoi(num,1,2,3,&count);
-	printf("\t\t\t\t%d个汉诺塔至少需要移动%d次!\n",num,count);
 	getchar();	
 	return 1;
 }
@@ -1972,7 +1973,7 @@ void hanoi(int num,int p1,int p2,int p3,int *count)
 	}
 	else
 	{
-		hanoi(num - 1 ,p1,p3,p2,count);
+		hanoi(num - 1,p1,p3,p2,count);
 		printf("\t\t\t\t盘子从 %d 柱移动到 %d 柱\n",p1,p3);
 		++(*count);
 		hanoi(num - 1,p2,p1,p3,count);
